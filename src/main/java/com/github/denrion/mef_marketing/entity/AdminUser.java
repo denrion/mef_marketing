@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 @UniqueConstraint(name = "username_unique", columnNames = {"username"}))
 @NamedQuery(name = AdminUser.GET_ALL_USERS,
         query = "SELECT u FROM AdminUser u")
-public class AdminUser extends AbstractEntity {
+public class AdminUser extends AbstractEntityWithId {
 
     public static final String GET_ALL_USERS = "AdminUser.getAll";
 

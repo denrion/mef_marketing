@@ -4,11 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-public class AbstractEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public abstract class AbstractEntityWithoutId {
 
     @Basic
     @Column(name = "created_at", nullable = false)
@@ -33,10 +29,6 @@ public class AbstractEntity {
         this.lastModified = LocalDateTime.now();
     }
 
-
-    public Long getId() {
-        return id;
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
