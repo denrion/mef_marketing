@@ -1,0 +1,8 @@
+<resources>
+    <Resource id="mef_marketing_v1" type="DataSource">
+        JdbcDriver com.mysql.jdbc.Driver
+        JdbcUrl jdbc:mysql://localhost:3306/mef_marketing_v1
+        JtaManaged true
+        UserName root
+    </Resource>
+</resources>
