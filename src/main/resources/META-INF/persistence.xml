@@ -13,8 +13,12 @@
         <properties>
             <property name="tomee.jpa.factory.lazy" value="true"/>
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <!-- DEPRICATED -->
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>-->
+
+            <!-- use this instead -->
             <property name="hibernate.dialect.storage_engine" value="innodb"/>
+
             <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
