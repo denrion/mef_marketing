@@ -1,14 +1,27 @@
 package com.github.denrion.mef_marketing.entity;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import static com.github.denrion.mef_marketing.entity.PotentialStudent.GET_ALL_POTENTIAL_STUDENTS;
+import static com.github.denrion.mef_marketing.entity.PotentialStudent.GET_POTENTIAL_STUDENT_BY_EMAIL;
+
 @Entity(name = "PotentialStudent")
 @Table(name = "potential_student", uniqueConstraints =
 @UniqueConstraint(name = "email_unique", columnNames = {"email"}))
+@NamedQuery(name = GET_ALL_POTENTIAL_STUDENTS,
+        query = "SELECT ps FROM PotentialStudent ps")
+@NamedQuery(name = GET_POTENTIAL_STUDENT_BY_EMAIL,
+        query = "SELECT ps FROM PotentialStudent ps WHERE ps.email = :email")
+@DynamicUpdate
 public class PotentialStudent extends AbstractEntityWithId {
+
+    public static final String GET_ALL_POTENTIAL_STUDENTS = "PotentialStudent.getAll";
+    public static final String GET_POTENTIAL_STUDENT_BY_EMAIL = "PotentialStudent.getByEmail";
 
     @Basic
     @Column(name = "email")
@@ -24,4 +37,30 @@ public class PotentialStudent extends AbstractEntityWithId {
     @Basic
     @Column(name = "phone")
     private String phone;
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
 }

@@ -1,13 +1,14 @@
 package com.github.denrion.mef_marketing.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-public abstract class AbstractEntityWithoutId {
+public abstract class AbstractEntityWithoutId implements Serializable {
 
     @Basic
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Basic

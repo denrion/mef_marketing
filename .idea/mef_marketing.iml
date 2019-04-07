@@ -5,7 +5,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
-          <factory-entry name="mefMarketingPU" value="f2f229cb-090f-4c29-a936-bc2cff2e2ec7" />
+          <factory-entry name="mefMarketingPU" value="94c18cb8-f2fb-4062-ac91-2085ecac9a3c" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />

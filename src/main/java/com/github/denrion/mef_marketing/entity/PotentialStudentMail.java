@@ -1,30 +1,39 @@
 package com.github.denrion.mef_marketing.entity;
 
-import javax.json.bind.annotation.JsonbDateFormat;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Entity(name = "Mail")
+import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_ALL_POTENTIAL_STUDENTS_BY_MAIL;
+import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_POTENTIAL_STUDENT_MAIL_BY_ID;
+
+@Entity(name = "PSByMail")
 @Table(name = "mail")
-public class Mail extends AbstractEntityWithoutId {
+@NamedQuery(name = GET_ALL_POTENTIAL_STUDENTS_BY_MAIL,
+        query = "SELECT DISTINCT psm FROM PSByMail psm JOIN FETCH psm.potentialStudent ps")
+@NamedQuery(name = GET_POTENTIAL_STUDENT_MAIL_BY_ID,
+        query = "SELECT DISTINCT psm FROM PSByMail psm JOIN FETCH psm.potentialStudent ps WHERE ps.id = :id")
+@DynamicUpdate
+public class PotentialStudentMail extends AbstractEntityWithoutId {
+
+    public static final String GET_ALL_POTENTIAL_STUDENTS_BY_MAIL = "PotentialStudentMail.getAll";
+    public static final String GET_POTENTIAL_STUDENT_MAIL_BY_ID = "PotentialStudentsMail.getById";
 
     @Id
     private Long id;
 
     @Basic
     @Column(name = "date_mail_received")
-    @JsonbDateFormat("yyyy-mm-dd")
     private LocalDate dateMailReceived;
 
     @Basic
     @Column(name = "date_mail_received_on_upis")
-    @JsonbDateFormat("yyyy-mm-dd")
     private LocalDate getDateMailReceivedOnUpis;
 
     @Basic
     @Column(name = "date_replay")
-    @JsonbDateFormat("yyyy-mm-dd")
     private LocalDate dateReplay;
 
     @Basic
@@ -36,12 +45,16 @@ public class Mail extends AbstractEntityWithoutId {
             precision = 6, scale = 2)
     private BigDecimal price;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "potential_student_id", nullable = false,
-            foreignKey = @ForeignKey(name = "potential_student_mail_fk"))
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "potential_student_id", nullable = false, insertable = false,
+            foreignKey = @ForeignKey(name = "fk_potential_student_mail"))
     @MapsId
     private PotentialStudent potentialStudent;
 
+
+    public Long getId() {
+        return id;
+    }
 
     public LocalDate getDateMailReceived() {
         return dateMailReceived;
@@ -89,5 +102,15 @@ public class Mail extends AbstractEntityWithoutId {
 
     public void setPotentialStudent(PotentialStudent potentialStudent) {
         this.potentialStudent = potentialStudent;
+    }
+
+    @Override
+    public String toString() {
+        return "PotentialStudentMail{" +
+                ", dateMailReceived=" + dateMailReceived +
+                ", getDateMailReceivedOnUpis=" + getDateMailReceivedOnUpis +
+                ", dateReplay=" + dateReplay +
+                ", emailWhichReceived='" + emailWhichReceived + '\'' +
+                ", price=" + price;
     }
 }
