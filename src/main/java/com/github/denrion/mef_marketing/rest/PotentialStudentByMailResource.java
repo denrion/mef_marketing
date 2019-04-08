@@ -1,11 +1,13 @@
 package com.github.denrion.mef_marketing.rest;
 
 import com.github.denrion.mef_marketing.config.DuplicateEmailException;
+import com.github.denrion.mef_marketing.entity.PotentialStudent;
 import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
 import com.github.denrion.mef_marketing.service.PotentialStudentMailService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -36,11 +38,10 @@ public class PotentialStudentByMailResource {
     }
 
     @GET
-    @Path("{id}")
+    @Path("{id: \\d+}")
     public Response getPSById(@PathParam("id") Long id) {
-        PotentialStudentMail student =
-                psMailService.getByIdWithPotentialStudent(id)
-                        .orElseThrow(NotFoundException::new);
+        PotentialStudentMail student = psMailService.getById(id)
+                .orElseThrow(NotFoundException::new);
 
         return Response
                 .ok(student)
@@ -49,59 +50,49 @@ public class PotentialStudentByMailResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response addPSMail(@FormParam("email") String email,
-                              @FormParam("phone") String phone,
-                              @FormParam("fullName") String fullName,
-                              @FormParam("dateMailReceived") String dateMailReceived,
-                              @FormParam("dateMailReceivedOnUpis") String dateMailReceivedOnUpis,
-                              @FormParam("emailWhichReceived") String emailWhichReceived,
-                              @FormParam("dateReply") String dateReply,
-                              @FormParam("price") BigDecimal price) {
+    public Response addPSMail(@BeanParam @Valid PotentialStudent ps,
+                              @BeanParam @Valid PotentialStudentMail psm) {
 
-//        PotentialStudent potentialStudent = studentService.createPotentialStudent(email, phone, fullName);
-//        PotentialStudentMail PS = psMailService.createMail(dateMailReceived, dateMailReceivedOnUpis,
-//                emailWhichReceived, dateReply, price, potentialStudent);
-
-        if (studentService.isEmailAlreadyInUse(email)) {
+        // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
+        if (studentService.isEmailAlreadyInUse(ps.getEmail())) {
             throw new DuplicateEmailException("This email already exists");
         }
 
-        // TEST DATA
-        PotentialStudentMail PS = psMailService.createPSByMail("email@gmail.com", "phone1", "Student1",
+        // ***************************************** TEST DATA ******************************************** //
+        PotentialStudentMail psMail1 = psMailService.createPSMail("email1@gmail.com", "phone1", "Student1",
                 "2019-04-07", "2019-04-07",
-                "mef1@gmail.com", "2019-04-07", BigDecimal.valueOf(1200.00));
+                "mef@gmail.com", "2019-04-07", BigDecimal.valueOf(1200.00));
+        psMailService.save(psMail1);
 
-        PotentialStudentMail student = psMailService.save(PS);
+        PotentialStudentMail psMai2 = psMailService.createPSMail("email2@gmail.com", "phone2", "Student2",
+                "2019-04-08", "2019-04-08",
+                "mef@gmail.com", "2019-04-08", BigDecimal.valueOf(1200.00));
+        psMailService.save(psMai2);
+        // ****************************************** DELETE LATER **************************************** //
+
+        psm.setPotentialStudent(ps);
 
         return Response
-                .ok(student)
+                .ok(psMailService.save(psm))
                 .build();
+
+
     }
 
     @PUT
-    @Path("{id}")
+    @Path("{id: \\d+}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response updatePSMail(@PathParam("id") Long id,
-                                 @FormParam("email") String email,
-                                 @FormParam("phone") String phone,
-                                 @FormParam("fullName") String fullName,
-                                 @FormParam("dateMailReceived") String dateMailReceived,
-                                 @FormParam("dateMailReceivedOnUpis") String dateMailReceivedOnUpis,
-                                 @FormParam("emailWhichReceived") String emailWhichReceived,
-                                 @FormParam("dateReply") String dateReply,
-                                 @FormParam("price") BigDecimal price) {
+                                 @BeanParam @Valid PotentialStudent ps,
+                                 @BeanParam @Valid PotentialStudentMail psm) {
 
-        if (studentService.isEmailAlreadyInUse(email)) {
+        if (studentService.isEmailAlreadyInUse(ps.getEmail())) {
             throw new DuplicateEmailException("This email already exists");
         }
 
-        // TEST DATA
-        PotentialStudentMail potentialStudentMail =
-                psMailService.createPSByMail("email1@gmail.com", "phone1", "Student1",
-                        "2019-04-04", "2019-04-04",
-                        "mef@gmail.com", "2019-04-04", BigDecimal.valueOf(1200.00));
+        psm.setPotentialStudent(ps);
 
-        PotentialStudentMail studentByMail = psMailService.update(potentialStudentMail, id)
+        PotentialStudentMail studentByMail = psMailService.update(psm, id)
                 .orElseThrow(NotFoundException::new);
 
         return Response
@@ -110,7 +101,7 @@ public class PotentialStudentByMailResource {
     }
 
     @DELETE
-    @Path("{id}")
+    @Path("{id: \\d+}")
     public Response deletePSMail(@PathParam("id") Long id) {
         psMailService.delete(id);
 

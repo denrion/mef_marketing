@@ -1,48 +1,64 @@
 package com.github.denrion.mef_marketing.entity;
 
+import com.github.denrion.mef_marketing.config.LocalDateAdapter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.ws.rs.FormParam;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_ALL_POTENTIAL_STUDENTS_BY_MAIL;
+import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_ALL_POTENTIAL_STUDENTS_MAIL;
 import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_POTENTIAL_STUDENT_MAIL_BY_ID;
 
-@Entity(name = "PSByMail")
+
+@Entity(name = "PotentialStudentMail")
 @Table(name = "mail")
-@NamedQuery(name = GET_ALL_POTENTIAL_STUDENTS_BY_MAIL,
-        query = "SELECT DISTINCT psm FROM PSByMail psm JOIN FETCH psm.potentialStudent ps")
-@NamedQuery(name = GET_POTENTIAL_STUDENT_MAIL_BY_ID,
-        query = "SELECT DISTINCT psm FROM PSByMail psm JOIN FETCH psm.potentialStudent ps WHERE ps.id = :id")
 @DynamicUpdate
+@NamedQuery(name = GET_ALL_POTENTIAL_STUDENTS_MAIL,
+        query = "SELECT psm FROM PotentialStudentMail psm JOIN FETCH psm.potentialStudent")
+@NamedQuery(name = GET_POTENTIAL_STUDENT_MAIL_BY_ID,
+        query = "SELECT psm FROM PotentialStudentMail psm JOIN FETCH psm.potentialStudent WHERE :id = psm.potentialStudent.id")
 public class PotentialStudentMail extends AbstractEntityWithoutId {
 
-    public static final String GET_ALL_POTENTIAL_STUDENTS_BY_MAIL = "PotentialStudentMail.getAll";
-    public static final String GET_POTENTIAL_STUDENT_MAIL_BY_ID = "PotentialStudentsMail.getById";
+    public static final String GET_ALL_POTENTIAL_STUDENTS_MAIL = "PotentialStudentMail.getAll";
+    public static final String GET_POTENTIAL_STUDENT_MAIL_BY_ID = "PotentialStudentMail.getById";
+
+    // TODO -> ADD FORM PARAM TO FIELDS
 
     @Id
     private Long id;
 
     @Basic
     @Column(name = "date_mail_received")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
+    @FormParam("dateMailReceived")
     private LocalDate dateMailReceived;
 
     @Basic
     @Column(name = "date_mail_received_on_upis")
-    private LocalDate getDateMailReceivedOnUpis;
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
+    @FormParam("dateMailReceivedOnUpis")
+    private LocalDate dateMailReceivedOnUpis;
 
     @Basic
-    @Column(name = "date_replay")
-    private LocalDate dateReplay;
+    @Column(name = "date_reply")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
+    @FormParam("dateReply")
+    private LocalDate dateReply;
 
     @Basic
     @Column(name = "email_which_received")
+    @Email(message = "It must be a valid email")
+    @FormParam("emailWhichReceived")
     private String emailWhichReceived;
 
     @Basic
     @Column(name = "price",
             precision = 6, scale = 2)
+    @FormParam("price")
     private BigDecimal price;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -64,20 +80,20 @@ public class PotentialStudentMail extends AbstractEntityWithoutId {
         this.dateMailReceived = dateMailReceived;
     }
 
-    public LocalDate getGetDateMailReceivedOnUpis() {
-        return getDateMailReceivedOnUpis;
+    public LocalDate getDateMailReceivedOnUpis() {
+        return dateMailReceivedOnUpis;
     }
 
-    public void setGetDateMailReceivedOnUpis(LocalDate getDateMailReceivedOnUpis) {
-        this.getDateMailReceivedOnUpis = getDateMailReceivedOnUpis;
+    public void setDateMailReceivedOnUpis(LocalDate dateMailReceivedOnUpis) {
+        this.dateMailReceivedOnUpis = dateMailReceivedOnUpis;
     }
 
-    public LocalDate getDateReplay() {
-        return dateReplay;
+    public LocalDate getDateReply() {
+        return dateReply;
     }
 
-    public void setDateReplay(LocalDate dateReplay) {
-        this.dateReplay = dateReplay;
+    public void setDateReply(LocalDate dateReplay) {
+        this.dateReply = dateReplay;
     }
 
     public String getEmailWhichReceived() {
@@ -107,10 +123,12 @@ public class PotentialStudentMail extends AbstractEntityWithoutId {
     @Override
     public String toString() {
         return "PotentialStudentMail{" +
+                "potentialStudent=" + potentialStudent +
                 ", dateMailReceived=" + dateMailReceived +
-                ", getDateMailReceivedOnUpis=" + getDateMailReceivedOnUpis +
-                ", dateReplay=" + dateReplay +
+                ", dateMailReceivedOnUpis=" + dateMailReceivedOnUpis +
+                ", dateReplay=" + dateReply +
                 ", emailWhichReceived='" + emailWhichReceived + '\'' +
-                ", price=" + price;
+                ", price=" + price +
+                '}';
     }
 }

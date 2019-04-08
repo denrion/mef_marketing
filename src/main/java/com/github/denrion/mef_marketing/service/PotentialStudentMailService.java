@@ -13,8 +13,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_ALL_POTENTIAL_STUDENTS_BY_MAIL;
+import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_ALL_POTENTIAL_STUDENTS_MAIL;
 import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_POTENTIAL_STUDENT_MAIL_BY_ID;
+
 
 @Stateless
 @LocalBean
@@ -28,23 +29,22 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
 
     @Override
     public Optional<PotentialStudentMail> getById(Long id) {
-        return Optional.ofNullable(entityManager.find(PotentialStudentMail.class, id));
-    }
+//        return Optional.ofNullable(entityManager.find(PotentialStudentMail.class, id));
 
-    public Optional<PotentialStudentMail> getByIdWithPotentialStudent(Long id) {
-        List<PotentialStudentMail> resultList =
-                entityManager.createNamedQuery(GET_POTENTIAL_STUDENT_MAIL_BY_ID,
+        // TODO -> only 1 query, is it more efficient???!!
+        List<PotentialStudentMail> list = entityManager
+                .createNamedQuery(GET_POTENTIAL_STUDENT_MAIL_BY_ID,
                         PotentialStudentMail.class)
-                        .setParameter("id", id)
-                        .getResultList();
+                .setParameter("id", id)
+                .getResultList();
 
-        return resultList.isEmpty() ? Optional.empty() : Optional.ofNullable(resultList.get(0));
+        return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.get(0));
     }
 
     @Override
     public List<PotentialStudentMail> getAll() {
         return entityManager
-                .createNamedQuery(GET_ALL_POTENTIAL_STUDENTS_BY_MAIL,
+                .createNamedQuery(GET_ALL_POTENTIAL_STUDENTS_MAIL,
                         PotentialStudentMail.class)
                 .getResultList();
     }
@@ -56,18 +56,16 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
     }
 
     @Override
-    public Optional<PotentialStudentMail> update(PotentialStudentMail newPsMail, Long id) {
-        PotentialStudent oldPS = studentService.getById(id)
+    public Optional<PotentialStudentMail> update(PotentialStudentMail newPSMail, Long id) {
+        // TODO -> HOW TO MAKE THIS MORE EFFICIENT??!!!
+        PotentialStudentMail oldPSMail = getById(id)
                 .orElseThrow(NotFoundException::new);
 
-        studentService.updatePS(oldPS, newPsMail.getPotentialStudent());
+        PotentialStudent oldPS = oldPSMail.getPotentialStudent();
+        studentService.updatePS(oldPS, newPSMail.getPotentialStudent());
+        updatePSMail(oldPSMail, newPSMail);
 
-        PotentialStudentMail oldPsMail = getById(id)
-                .orElseThrow(NotFoundException::new);
-
-        updatePSMail(oldPsMail, newPsMail);
-
-        return Optional.ofNullable(entityManager.merge(oldPsMail));
+        return Optional.ofNullable(entityManager.merge(oldPSMail));
     }
 
     @Override
@@ -76,27 +74,29 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
                 .orElseThrow(NotFoundException::new);
 
         entityManager.remove(PotentialStudentMailFromDB);
+
+        // TODO -> SHOULD WE SOFT DELETE INSTEAD???
     }
 
-    public PotentialStudentMail createPSByMail(String email, String phone, String fullName,
-                                               String dateMailReceived, String dateMailReceivedOnUpis,
-                                               String emailWhichReceived, String dateReply, BigDecimal price) {
+    public PotentialStudentMail createPSMail(String email, String phone, String fullName,
+                                             String dateMailReceived, String dateMailReceivedOnUpis,
+                                             String emailWhichReceived, String dateReply, BigDecimal price) {
 
         PotentialStudentMail psMail = new PotentialStudentMail();
 
-        psMail.setPotentialStudent(
-                studentService.createPotentialStudent(email, phone, fullName));
+        psMail.setPotentialStudent(studentService
+                .createPotentialStudent(email, phone, fullName));
 
         if (!dateMailReceived.trim().isEmpty()) {
             psMail.setDateMailReceived(LocalDate.parse(dateMailReceived));
         }
 
         if (!dateMailReceivedOnUpis.trim().isEmpty()) {
-            psMail.setGetDateMailReceivedOnUpis(LocalDate.parse(dateMailReceivedOnUpis));
+            psMail.setDateMailReceivedOnUpis(LocalDate.parse(dateMailReceivedOnUpis));
         }
 
         if (!dateReply.trim().isEmpty()) {
-            psMail.setDateReplay(LocalDate.parse(dateReply));
+            psMail.setDateReply(LocalDate.parse(dateReply));
         }
 
         psMail.setEmailWhichReceived(emailWhichReceived);
@@ -106,11 +106,11 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
     }
 
     private void updatePSMail(PotentialStudentMail oldPSMail, PotentialStudentMail newPSMail) {
-        // maybe check which values are the same and then set only changed value
+        // TODO -> SHOULD I CHECK IF VALUES ARE THE SAME FIRST???!!!!
 
         oldPSMail.setDateMailReceived(newPSMail.getDateMailReceived());
-        oldPSMail.setGetDateMailReceivedOnUpis(newPSMail.getGetDateMailReceivedOnUpis());
-        oldPSMail.setDateReplay(newPSMail.getDateReplay());
+        oldPSMail.setDateMailReceivedOnUpis(newPSMail.getDateMailReceivedOnUpis());
+        oldPSMail.setDateReply(newPSMail.getDateReply());
         oldPSMail.setEmailWhichReceived(newPSMail.getEmailWhichReceived());
         oldPSMail.setPrice(newPSMail.getPrice());
     }
