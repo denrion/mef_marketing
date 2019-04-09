@@ -11,6 +11,9 @@ public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundExceptio
 
     @Override
     public Response toResponse(NotFoundException e) {
+        System.out.println(e.getResponse());
+        System.out.println(e.getClass());
+
         return Response
                 .status(Response.Status.NOT_FOUND)
                 .entity(Collections.singletonMap("error", e.getMessage()))

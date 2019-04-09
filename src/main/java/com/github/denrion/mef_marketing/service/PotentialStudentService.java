@@ -19,6 +19,10 @@ public class PotentialStudentService {
     @Inject
     EntityManager entityManager;
 
+    public Optional<PotentialStudent> getById(Long id) {
+        return Optional.ofNullable(entityManager.find(PotentialStudent.class, id));
+    }
+
     // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
     public void checkIfEmailAlreadyInDB(String email) {
         if (getByEmail(email).isPresent()) {
@@ -59,4 +63,6 @@ public class PotentialStudentService {
         if (!oldPS.getFullName().equals(newPS.getEmail()))
             oldPS.setFullName(newPS.getFullName());
     }
+
+
 }

@@ -21,8 +21,13 @@ import static com.github.denrion.mef_marketing.entity.PotentialStudent.GET_POTEN
         query = "SELECT ps FROM PotentialStudent ps WHERE ps.email = :email")
 public class PotentialStudent extends AbstractEntityWithId {
 
+    // NAMED QUERIES
+
     public static final String GET_ALL_POTENTIAL_STUDENTS = "PotentialStudent.getAll";
     public static final String GET_POTENTIAL_STUDENT_BY_EMAIL = "PotentialStudent.getByEmail";
+
+
+    // FIELDS
 
     @Basic
     @Column(name = "email")
@@ -42,6 +47,21 @@ public class PotentialStudent extends AbstractEntityWithId {
     @FormParam("phone")
     private String phone;
 
+//    @OneToMany(mappedBy = "potentialStudent", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<EntranceTest> tests = new ArrayList<>();
+//
+//    public void addEntranceTest(EntranceTest test) {
+//        tests.add(test);
+//        test.setPotentialStudent(this);
+//    }
+//
+//    public void removeEntranceTest(EntranceTest test) {
+//        tests.remove(test);
+//        test.setPotentialStudent(null);
+//    }
+
+
+    // GETTERS AND SETTERS
 
     public String getEmail() {
         return email;

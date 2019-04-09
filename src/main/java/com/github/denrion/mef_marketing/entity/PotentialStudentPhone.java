@@ -40,7 +40,7 @@ public class PotentialStudentPhone extends AbstractEntityWithoutId {
 
     @Basic
     @Column(name = "heard_of", columnDefinition = "TEXT")
-    @FormParam("hearOf")
+    @FormParam("heardOf")
     private String heardOf;
 
     @Basic

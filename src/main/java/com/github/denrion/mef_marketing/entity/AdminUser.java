@@ -17,8 +17,12 @@ import javax.ws.rs.FormParam;
         query = "SELECT u FROM AdminUser u WHERE u.username = :username")
 public class AdminUser extends AbstractEntityWithId {
 
+    // NAMED QUERIES
+
     public static final String GET_ALL_USERS = "AdminUser.getAll";
     public static final String GET_USER_BY_USERNAME = "AdminUser.getByUsername";
+
+    // FIELDS
 
     @Basic
     @Column(name = "full_name", length = 80)
@@ -38,6 +42,21 @@ public class AdminUser extends AbstractEntityWithId {
     @FormParam("username")
     private String username;
 
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<EntranceTest> tests = new ArrayList<>();
+//
+//    public void addEntranceTest(EntranceTest test) {
+//        tests.add(test);
+//        test.setUser(this);
+//    }
+//
+//    public void removeEntranceTest(EntranceTest test) {
+//        tests.remove(test);
+//        test.setUser(null);
+//    }
+
+
+    // GETTERS AND SETTERS
 
     public String getFullName() {
         return fullName;
