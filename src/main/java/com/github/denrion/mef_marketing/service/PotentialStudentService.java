@@ -19,7 +19,14 @@ public class PotentialStudentService {
     @Inject
     EntityManager entityManager;
 
-    public Optional<PotentialStudent> getByEmail(String email) {
+    // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
+    public void checkIfEmailAlreadyInDB(String email) {
+        if (getByEmail(email).isPresent()) {
+            throw new DuplicateEmailException("This email already exists");
+        }
+    }
+
+    private Optional<PotentialStudent> getByEmail(String email) {
         List<PotentialStudent> resultList = entityManager
                 .createNamedQuery(GET_POTENTIAL_STUDENT_BY_EMAIL,
                         PotentialStudent.class)
@@ -27,13 +34,6 @@ public class PotentialStudentService {
                 .getResultList();
 
         return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
-    }
-
-    // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
-    public void checkIfEmailAlreadyInDB(String email) {
-        if (getByEmail(email).isPresent()) {
-            throw new DuplicateEmailException("This email already exists");
-        }
     }
 
     public PotentialStudent createPotentialStudent(String email, String phone, String fullName) {
@@ -47,8 +47,11 @@ public class PotentialStudentService {
     }
 
     public void updatePSFields(PotentialStudent oldPS, PotentialStudent newPS) {
-        if (!oldPS.getEmail().equals(newPS.getEmail()) || !getByEmail(newPS.getEmail()).isPresent())
+        if (oldPS.getEmail().equals(newPS.getEmail()) || getByEmail(newPS.getEmail()).isPresent()) {
+            throw new DuplicateEmailException("This email already exists");
+        } else {
             oldPS.setEmail(newPS.getEmail());
+        }
 
         if (!oldPS.getPhone().equals(newPS.getPhone()))
             oldPS.setPhone(newPS.getPhone());
