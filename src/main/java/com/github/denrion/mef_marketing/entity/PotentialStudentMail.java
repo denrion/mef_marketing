@@ -16,7 +16,7 @@ import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_P
 
 @Entity(name = "PotentialStudentMail")
 @Table(name = "mail")
-@DynamicUpdate
+@DynamicUpdate // HIBERNATE ONLY!!!!!!!!!!!
 @NamedQuery(name = GET_ALL_POTENTIAL_STUDENTS_MAIL,
         query = "SELECT psm FROM PotentialStudentMail psm JOIN FETCH psm.potentialStudent")
 @NamedQuery(name = GET_POTENTIAL_STUDENT_MAIL_BY_ID,
@@ -25,8 +25,6 @@ public class PotentialStudentMail extends AbstractEntityWithoutId {
 
     public static final String GET_ALL_POTENTIAL_STUDENTS_MAIL = "PotentialStudentMail.getAll";
     public static final String GET_POTENTIAL_STUDENT_MAIL_BY_ID = "PotentialStudentMail.getById";
-
-    // TODO -> ADD FORM PARAM TO FIELDS
 
     @Id
     private Long id;

@@ -18,7 +18,7 @@ import java.net.URI;
 public class AdminUserResource {
 
     @Inject
-    AdminUserService adminUserService;
+    AdminUserService userService;
 
     @Context
     private UriInfo uriInfo;
@@ -26,14 +26,14 @@ public class AdminUserResource {
     @GET
     public Response getAllUsers() {
         return Response
-                .ok(adminUserService.getAll())
+                .ok(userService.getAll())
                 .build();
     }
 
     @GET
     @Path("{id: \\d+}")
     public Response getUserById(@PathParam("id") Long id) {
-        AdminUser user = adminUserService.getById(id)
+        AdminUser user = userService.getById(id)
                 .orElseThrow(NotFoundException::new);
 
         return Response
@@ -42,8 +42,9 @@ public class AdminUserResource {
     }
 
     @POST
-    public Response createUser(@Valid AdminUser user) {
-        AdminUser adminUser = adminUserService.save(user);
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response createUser(@BeanParam @Valid AdminUser user) {
+        AdminUser adminUser = userService.save(user);
 
         URI uri = uriInfo.getAbsolutePathBuilder()
                 .path(adminUser.getId().toString())
@@ -58,20 +59,20 @@ public class AdminUserResource {
 
     @PUT
     @Path("{id: \\d+}")
-    public Response updateUser(@PathParam("id") Long id, @Valid AdminUser user) {
-        AdminUser adminUser = adminUserService.update(user, id)
-                .orElseThrow(IllegalArgumentException::new); // TODO create DuplicateEntryException and add here
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response updateUser(@PathParam("id") Long id, @BeanParam @Valid AdminUser user) {
+        AdminUser adminUser = userService.update(user, id)
+                .orElseThrow(NotFoundException::new);
 
         return Response
                 .ok(adminUser)
-                .status(Response.Status.OK)
                 .build();
     }
 
     @DELETE
     @Path("{id: \\d+}")
     public Response deleteUser(@PathParam("id") Long id) {
-        adminUserService.delete(id);
+        userService.delete(id);
 
         return Response
                 .status(Response.Status.NO_CONTENT)

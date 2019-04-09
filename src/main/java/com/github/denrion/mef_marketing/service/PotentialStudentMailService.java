@@ -1,5 +1,6 @@
 package com.github.denrion.mef_marketing.service;
 
+import com.github.denrion.mef_marketing.config.DuplicateEmailException;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
 import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
 
@@ -50,16 +51,28 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
     }
 
     @Override
-    public PotentialStudentMail save(PotentialStudentMail PotentialStudentMail) {
-        entityManager.persist(PotentialStudentMail);
-        return PotentialStudentMail;
+    public PotentialStudentMail save(PotentialStudentMail psm) {
+        System.out.println(psm.getPotentialStudent().getEmail());
+
+        // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
+        if (studentService.isEmailAlreadyInUse(psm.getPotentialStudent().getEmail())) {
+            throw new DuplicateEmailException("This email already exists");
+        }
+
+        entityManager.persist(psm);
+
+        return psm;
     }
 
     @Override
     public Optional<PotentialStudentMail> update(PotentialStudentMail newPSMail, Long id) {
-        // TODO -> HOW TO MAKE THIS MORE EFFICIENT??!!!
         PotentialStudentMail oldPSMail = getById(id)
                 .orElseThrow(NotFoundException::new);
+
+        if (oldPSMail.getPotentialStudent().getEmail()
+                .equals(newPSMail.getPotentialStudent().getEmail())) {
+            throw new DuplicateEmailException("This email already exists");
+        }
 
         PotentialStudent oldPS = oldPSMail.getPotentialStudent();
         studentService.updatePS(oldPS, newPSMail.getPotentialStudent());

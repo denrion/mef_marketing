@@ -1,10 +1,8 @@
 package com.github.denrion.mef_marketing.rest;
 
-import com.github.denrion.mef_marketing.config.DuplicateEmailException;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
 import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
 import com.github.denrion.mef_marketing.service.PotentialStudentMailService;
-import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -14,15 +12,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.math.BigDecimal;
+import java.net.URI;
 
 
-@Path("potentialStudentsByMail")
+@Path("potentialStudentsMail")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class PotentialStudentByMailResource {
-
-    @Inject
-    PotentialStudentService studentService;
 
     @Inject
     PotentialStudentMailService psMailService;
@@ -53,11 +49,6 @@ public class PotentialStudentByMailResource {
     public Response addPSMail(@BeanParam @Valid PotentialStudent ps,
                               @BeanParam @Valid PotentialStudentMail psm) {
 
-        // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
-        if (studentService.isEmailAlreadyInUse(ps.getEmail())) {
-            throw new DuplicateEmailException("This email already exists");
-        }
-
         // ***************************************** TEST DATA ******************************************** //
         PotentialStudentMail psMail1 = psMailService.createPSMail("email1@gmail.com", "phone1", "Student1",
                 "2019-04-07", "2019-04-07",
@@ -71,12 +62,17 @@ public class PotentialStudentByMailResource {
         // ****************************************** DELETE LATER **************************************** //
 
         psm.setPotentialStudent(ps);
+        psMailService.save(psm);
 
-        return Response
-                .ok(psMailService.save(psm))
+        URI uri = uriInfo.getAbsolutePathBuilder()
+                .path(psm.getId().toString())
                 .build();
 
-
+        return Response
+                .created(uri)
+                .entity(psm)
+                .status(Response.Status.CREATED)
+                .build();
     }
 
     @PUT
@@ -85,10 +81,6 @@ public class PotentialStudentByMailResource {
     public Response updatePSMail(@PathParam("id") Long id,
                                  @BeanParam @Valid PotentialStudent ps,
                                  @BeanParam @Valid PotentialStudentMail psm) {
-
-        if (studentService.isEmailAlreadyInUse(ps.getEmail())) {
-            throw new DuplicateEmailException("This email already exists");
-        }
 
         psm.setPotentialStudent(ps);
 

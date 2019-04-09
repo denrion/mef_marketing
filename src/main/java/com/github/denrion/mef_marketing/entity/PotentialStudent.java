@@ -14,7 +14,7 @@ import static com.github.denrion.mef_marketing.entity.PotentialStudent.GET_POTEN
 @Entity(name = "PotentialStudent")
 @Table(name = "potential_student", uniqueConstraints =
 @UniqueConstraint(name = "email_unique", columnNames = {"email"}))
-@DynamicUpdate
+@DynamicUpdate // HIBERNATE ONLY!!!!!!!!!!!
 @NamedQuery(name = GET_ALL_POTENTIAL_STUDENTS,
         query = "SELECT ps FROM PotentialStudent ps")
 @NamedQuery(name = GET_POTENTIAL_STUDENT_BY_EMAIL,
