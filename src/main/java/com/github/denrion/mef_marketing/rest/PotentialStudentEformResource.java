@@ -1,8 +1,8 @@
 package com.github.denrion.mef_marketing.rest;
 
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
-import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
-import com.github.denrion.mef_marketing.service.PotentialStudentMailService;
+import com.github.denrion.mef_marketing.entity.PotentialStudentEform;
+import com.github.denrion.mef_marketing.service.PotentialStudentEformService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -11,16 +11,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.math.BigDecimal;
 import java.net.URI;
 
-@Path("potentialStudentsMail")
+@Path("potentialStudentsEform")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class PotentialStudentMailResource {
+public class PotentialStudentEformResource {
 
     @Inject
-    PotentialStudentMailService psMailService;
+    PotentialStudentEformService psEformService;
 
     @Context
     UriInfo uriInfo;
@@ -28,14 +27,14 @@ public class PotentialStudentMailResource {
     @GET
     public Response getAllPS() {
         return Response
-                .ok(psMailService.getAll())
+                .ok(psEformService.getAll())
                 .build();
     }
 
     @GET
     @Path("{id: \\d+}")
     public Response getPSById(@PathParam("id") Long id) {
-        PotentialStudentMail student = psMailService.getById(id)
+        PotentialStudentEform student = psEformService.getById(id)
                 .orElseThrow(NotFoundException::new);
 
         return Response
@@ -46,30 +45,28 @@ public class PotentialStudentMailResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createPS(@BeanParam @Valid PotentialStudent ps,
-                             @BeanParam @Valid PotentialStudentMail psm) {
+                             @BeanParam @Valid PotentialStudentEform pse) {
 
         // ***************************************** TEST DATA ******************************************** //
-        PotentialStudentMail ps1 = psMailService.createPSMail("email1@gmail.com", "phone1", "Student1",
-                "2019-04-07", "2019-04-07",
-                "mef@gmail.com", "2019-04-07", BigDecimal.valueOf(1200.00));
-        psMailService.save(ps1);
+        PotentialStudentEform ps1 = psEformService.createPSEform("email5@gmail.com", "phone5", "Student5",
+                "2019-04-07", "2019-04-07");
+        psEformService.save(ps1);
 
-        PotentialStudentMail ps2 = psMailService.createPSMail("email2@gmail.com", "phone2", "Student2",
-                "2019-04-08", "2019-04-08",
-                "mef@gmail.com", "2019-04-08", BigDecimal.valueOf(1200.00));
-        psMailService.save(ps2);
+        PotentialStudentEform ps2 = psEformService.createPSEform("email6@gmail.com", "phone6", "Student6",
+                "2019-04-08", "2019-04-08");
+        psEformService.save(ps2);
         // ****************************************** DELETE LATER **************************************** //
 
-        psm.setPotentialStudent(ps);
-        psMailService.save(psm);
+        pse.setPotentialStudent(ps);
+        psEformService.save(pse);
 
         URI uri = uriInfo.getAbsolutePathBuilder()
-                .path(psm.getId().toString())
+                .path(pse.getId().toString())
                 .build();
 
         return Response
                 .created(uri)
-                .entity(psm)
+                .entity(pse)
                 .status(Response.Status.CREATED)
                 .build();
     }
@@ -79,11 +76,11 @@ public class PotentialStudentMailResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response updatePS(@PathParam("id") Long id,
                              @BeanParam @Valid PotentialStudent ps,
-                             @BeanParam @Valid PotentialStudentMail psm) {
+                             @BeanParam @Valid PotentialStudentEform pse) {
 
-        psm.setPotentialStudent(ps);
+        pse.setPotentialStudent(ps);
 
-        PotentialStudentMail student = psMailService.update(psm, id)
+        PotentialStudentEform student = psEformService.update(pse, id)
                 .orElseThrow(NotFoundException::new);
 
         return Response
@@ -94,7 +91,7 @@ public class PotentialStudentMailResource {
     @DELETE
     @Path("{id: \\d+}")
     public Response deletePS(@PathParam("id") Long id) {
-        psMailService.delete(id);
+        psEformService.delete(id);
 
         return Response
                 .ok()

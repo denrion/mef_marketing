@@ -26,7 +26,6 @@ public class PotentialStudent extends AbstractEntityWithId {
 
     @Basic
     @Column(name = "email")
-    @NotBlank(message = "not blank")
     @Email(message = "It must be a valid email")
     @FormParam("email")
     private String email;

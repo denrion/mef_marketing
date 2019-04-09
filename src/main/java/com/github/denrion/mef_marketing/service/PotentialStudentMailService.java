@@ -1,6 +1,5 @@
 package com.github.denrion.mef_marketing.service;
 
-import com.github.denrion.mef_marketing.config.DuplicateEmailException;
 import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
 
 import javax.ejb.LocalBean;
@@ -50,10 +49,7 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
 
     @Override
     public PotentialStudentMail save(PotentialStudentMail psm) {
-        // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
-        if (studentService.isEmailAlreadyInDB(psm.getPotentialStudent().getEmail())) {
-            throw new DuplicateEmailException("This email already exists");
-        }
+        studentService.checkIfEmailAlreadyInDB(psm.getPotentialStudent().getEmail());
 
         entityManager.persist(psm);
 

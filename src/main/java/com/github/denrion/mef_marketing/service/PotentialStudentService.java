@@ -29,8 +29,11 @@ public class PotentialStudentService {
         return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
     }
 
-    public boolean isEmailAlreadyInDB(String email) {
-        return getByEmail(email).isPresent();
+    // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
+    public void checkIfEmailAlreadyInDB(String email) {
+        if (getByEmail(email).isPresent()) {
+            throw new DuplicateEmailException("This email already exists");
+        }
     }
 
     public PotentialStudent createPotentialStudent(String email, String phone, String fullName) {
@@ -44,12 +47,13 @@ public class PotentialStudentService {
     }
 
     public void updatePSFields(PotentialStudent oldPS, PotentialStudent newPS) {
-        if (oldPS.getEmail().equals(newPS.getEmail())) {
-            throw new DuplicateEmailException("This email already exists");
-        }
+        if (!oldPS.getEmail().equals(newPS.getEmail()) || !getByEmail(newPS.getEmail()).isPresent())
+            oldPS.setEmail(newPS.getEmail());
 
-        oldPS.setEmail(newPS.getEmail());
-        oldPS.setPhone(newPS.getPhone());
-        oldPS.setFullName(newPS.getFullName());
+        if (!oldPS.getPhone().equals(newPS.getPhone()))
+            oldPS.setPhone(newPS.getPhone());
+
+        if (!oldPS.getFullName().equals(newPS.getEmail()))
+            oldPS.setFullName(newPS.getFullName());
     }
 }

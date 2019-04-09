@@ -1,6 +1,5 @@
 package com.github.denrion.mef_marketing.service;
 
-import com.github.denrion.mef_marketing.config.DuplicateEmailException;
 import com.github.denrion.mef_marketing.entity.PotentialStudentPhone;
 
 import javax.ejb.LocalBean;
@@ -48,10 +47,7 @@ public class PotentialStudentPhoneService implements GenericService<PotentialStu
 
     @Override
     public PotentialStudentPhone save(PotentialStudentPhone psp) {
-        // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
-        if (studentService.isEmailAlreadyInDB(psp.getPotentialStudent().getEmail())) {
-            throw new DuplicateEmailException("This email already exists");
-        }
+        studentService.checkIfEmailAlreadyInDB(psp.getPotentialStudent().getEmail());
 
         entityManager.persist(psp);
 
@@ -107,8 +103,6 @@ public class PotentialStudentPhoneService implements GenericService<PotentialStu
     }
 
     private void updatePSPhoneFields(PotentialStudentPhone oldPSPhone, PotentialStudentPhone newPSPhone) {
-        // TODO -> SHOULD I CHECK IF VALUES ARE THE SAME FIRST???!!!!
-
         oldPSPhone.setCity(newPSPhone.getCity());
         oldPSPhone.setHeardOf(newPSPhone.getHeardOf());
         oldPSPhone.setStudyYear(newPSPhone.getStudyYear());
