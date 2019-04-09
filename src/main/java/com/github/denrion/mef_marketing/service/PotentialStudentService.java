@@ -1,5 +1,6 @@
 package com.github.denrion.mef_marketing.service;
 
+import com.github.denrion.mef_marketing.config.DuplicateEmailException;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
 
 import javax.ejb.LocalBean;
@@ -28,7 +29,7 @@ public class PotentialStudentService {
         return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
     }
 
-    public boolean isEmailAlreadyInUse(String email) {
+    public boolean isEmailAlreadyInDB(String email) {
         return getByEmail(email).isPresent();
     }
 
@@ -42,10 +43,13 @@ public class PotentialStudentService {
         return student;
     }
 
-    public void updatePS(PotentialStudent oldPS, PotentialStudent newPS) {
+    public void updatePSFields(PotentialStudent oldPS, PotentialStudent newPS) {
+        if (oldPS.getEmail().equals(newPS.getEmail())) {
+            throw new DuplicateEmailException("This email already exists");
+        }
+
         oldPS.setEmail(newPS.getEmail());
         oldPS.setPhone(newPS.getPhone());
         oldPS.setFullName(newPS.getFullName());
     }
-
 }

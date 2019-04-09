@@ -1,7 +1,6 @@
 package com.github.denrion.mef_marketing.service;
 
 import com.github.denrion.mef_marketing.config.DuplicateEmailException;
-import com.github.denrion.mef_marketing.entity.PotentialStudent;
 import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
 
 import javax.ejb.LocalBean;
@@ -16,7 +15,6 @@ import java.util.Optional;
 
 import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_ALL_POTENTIAL_STUDENTS_MAIL;
 import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_POTENTIAL_STUDENT_MAIL_BY_ID;
-
 
 @Stateless
 @LocalBean
@@ -52,10 +50,8 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
 
     @Override
     public PotentialStudentMail save(PotentialStudentMail psm) {
-        System.out.println(psm.getPotentialStudent().getEmail());
-
         // TODO -> FIND A MORE EFFICIENT WAY TO DO THIS
-        if (studentService.isEmailAlreadyInUse(psm.getPotentialStudent().getEmail())) {
+        if (studentService.isEmailAlreadyInDB(psm.getPotentialStudent().getEmail())) {
             throw new DuplicateEmailException("This email already exists");
         }
 
@@ -69,27 +65,21 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
         PotentialStudentMail oldPSMail = getById(id)
                 .orElseThrow(NotFoundException::new);
 
-        if (oldPSMail.getPotentialStudent().getEmail()
-                .equals(newPSMail.getPotentialStudent().getEmail())) {
-            throw new DuplicateEmailException("This email already exists");
-        }
-
-        PotentialStudent oldPS = oldPSMail.getPotentialStudent();
-        studentService.updatePS(oldPS, newPSMail.getPotentialStudent());
-        updatePSMail(oldPSMail, newPSMail);
+        studentService.updatePSFields(oldPSMail.getPotentialStudent(), newPSMail.getPotentialStudent());
+        updatePSMailFields(oldPSMail, newPSMail);
 
         return Optional.ofNullable(entityManager.merge(oldPSMail));
     }
 
     @Override
     public void delete(Long id) {
-        PotentialStudentMail PotentialStudentMailFromDB = getById(id)
+        PotentialStudentMail psMail = getById(id)
                 .orElseThrow(NotFoundException::new);
 
-        entityManager.remove(PotentialStudentMailFromDB);
-
-        // TODO -> SHOULD WE SOFT DELETE INSTEAD???
+        entityManager.remove(psMail);
     }
+
+    // FOR TESTING
 
     public PotentialStudentMail createPSMail(String email, String phone, String fullName,
                                              String dateMailReceived, String dateMailReceivedOnUpis,
@@ -118,7 +108,7 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
         return psMail;
     }
 
-    private void updatePSMail(PotentialStudentMail oldPSMail, PotentialStudentMail newPSMail) {
+    private void updatePSMailFields(PotentialStudentMail oldPSMail, PotentialStudentMail newPSMail) {
         // TODO -> SHOULD I CHECK IF VALUES ARE THE SAME FIRST???!!!!
 
         oldPSMail.setDateMailReceived(newPSMail.getDateMailReceived());

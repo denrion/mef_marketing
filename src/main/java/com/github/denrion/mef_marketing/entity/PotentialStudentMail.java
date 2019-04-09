@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_ALL_POTENTIAL_STUDENTS_MAIL;
 import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_POTENTIAL_STUDENT_MAIL_BY_ID;
 
-
 @Entity(name = "PotentialStudentMail")
 @Table(name = "mail")
 @DynamicUpdate // HIBERNATE ONLY!!!!!!!!!!!
@@ -23,39 +22,43 @@ import static com.github.denrion.mef_marketing.entity.PotentialStudentMail.GET_P
         query = "SELECT psm FROM PotentialStudentMail psm JOIN FETCH psm.potentialStudent WHERE :id = psm.potentialStudent.id")
 public class PotentialStudentMail extends AbstractEntityWithoutId {
 
+    // NAMED QUERIES
+
     public static final String GET_ALL_POTENTIAL_STUDENTS_MAIL = "PotentialStudentMail.getAll";
     public static final String GET_POTENTIAL_STUDENT_MAIL_BY_ID = "PotentialStudentMail.getById";
+
+
+    // FIELDS
 
     @Id
     private Long id;
 
     @Basic
     @Column(name = "date_mail_received")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     @FormParam("dateMailReceived")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateMailReceived;
 
     @Basic
     @Column(name = "date_mail_received_on_upis")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     @FormParam("dateMailReceivedOnUpis")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateMailReceivedOnUpis;
 
     @Basic
     @Column(name = "date_reply")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     @FormParam("dateReply")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateReply;
 
     @Basic
     @Column(name = "email_which_received")
-    @Email(message = "It must be a valid email")
     @FormParam("emailWhichReceived")
+    @Email(message = "It must be a valid email")
     private String emailWhichReceived;
 
     @Basic
-    @Column(name = "price",
-            precision = 6, scale = 2)
+    @Column(name = "price", precision = 6, scale = 2)
     @FormParam("price")
     private BigDecimal price;
 
@@ -65,6 +68,8 @@ public class PotentialStudentMail extends AbstractEntityWithoutId {
     @MapsId
     private PotentialStudent potentialStudent;
 
+
+    // GETTERS AND SETTERS
 
     public Long getId() {
         return id;

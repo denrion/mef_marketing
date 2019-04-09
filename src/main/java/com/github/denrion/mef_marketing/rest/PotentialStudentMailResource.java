@@ -14,11 +14,10 @@ import javax.ws.rs.core.UriInfo;
 import java.math.BigDecimal;
 import java.net.URI;
 
-
 @Path("potentialStudentsMail")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class PotentialStudentByMailResource {
+public class PotentialStudentMailResource {
 
     @Inject
     PotentialStudentMailService psMailService;
@@ -27,7 +26,7 @@ public class PotentialStudentByMailResource {
     UriInfo uriInfo;
 
     @GET
-    public Response getAllPSMail() {
+    public Response getAllPS() {
         return Response
                 .ok(psMailService.getAll())
                 .build();
