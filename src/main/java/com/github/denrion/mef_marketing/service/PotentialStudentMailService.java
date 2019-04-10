@@ -7,8 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.NotFoundException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,35 +73,6 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
         entityManager.remove(psMail);
     }
 
-    // FOR TESTING
-
-    public PotentialStudentMail createPSMail(String email, String phone, String fullName,
-                                             String dateMailReceived, String dateMailReceivedOnUpis,
-                                             String emailWhichReceived, String dateReply, BigDecimal price) {
-
-        PotentialStudentMail psMail = new PotentialStudentMail();
-
-        psMail.setPotentialStudent(studentService
-                .createPotentialStudent(email, phone, fullName));
-
-        if (!dateMailReceived.trim().isEmpty()) {
-            psMail.setDateMailReceived(LocalDate.parse(dateMailReceived));
-        }
-
-        if (!dateMailReceivedOnUpis.trim().isEmpty()) {
-            psMail.setDateMailReceivedOnUpis(LocalDate.parse(dateMailReceivedOnUpis));
-        }
-
-        if (!dateReply.trim().isEmpty()) {
-            psMail.setDateReply(LocalDate.parse(dateReply));
-        }
-
-        psMail.setEmailWhichReceived(emailWhichReceived);
-        psMail.setPrice(price);
-
-        return psMail;
-    }
-
     private void updatePSMailFields(PotentialStudentMail oldPSMail, PotentialStudentMail newPSMail) {
         // TODO -> SHOULD I CHECK IF VALUES ARE THE SAME FIRST???!!!!
 
@@ -113,4 +82,35 @@ public class PotentialStudentMailService implements GenericService<PotentialStud
         oldPSMail.setEmailWhichReceived(newPSMail.getEmailWhichReceived());
         oldPSMail.setPrice(newPSMail.getPrice());
     }
+
+
+    // FOR TESTING
+
+//    public PotentialStudentMail createPSMail(String email, String phone, String fullName,
+//                                             String dateMailReceived, String dateMailReceivedOnUpis,
+//                                             String emailWhichReceived, String dateReply, BigDecimal price) {
+//
+//        PotentialStudentMail psMail = new PotentialStudentMail();
+//
+//        psMail.setPotentialStudent(studentService
+//                .createPotentialStudent(email, phone, fullName));
+//
+//        if (!dateMailReceived.trim().isEmpty()) {
+//            psMail.setDateMailReceived(LocalDate.parse(dateMailReceived));
+//        }
+//
+//        if (!dateMailReceivedOnUpis.trim().isEmpty()) {
+//            psMail.setDateMailReceivedOnUpis(LocalDate.parse(dateMailReceivedOnUpis));
+//        }
+//
+//        if (!dateReply.trim().isEmpty()) {
+//            psMail.setDateReply(LocalDate.parse(dateReply));
+//        }
+//
+//        psMail.setEmailWhichReceived(emailWhichReceived);
+//        psMail.setPrice(price);
+//
+//        return psMail;
+//    }
+
 }

@@ -40,29 +40,27 @@ public class PotentialStudentService {
         return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
     }
 
-    public PotentialStudent createPotentialStudent(String email, String phone, String fullName) {
-        PotentialStudent student = new PotentialStudent();
-
-        student.setEmail(email);
-        student.setPhone(phone);
-        student.setFullName(fullName);
-
-        return student;
-    }
-
     public void updatePSFields(PotentialStudent oldPS, PotentialStudent newPS) {
-        if (oldPS.getEmail().equals(newPS.getEmail()) || getByEmail(newPS.getEmail()).isPresent()) {
+        if (!oldPS.getEmail().equals(newPS.getEmail())
+                && getByEmail(newPS.getEmail()).isPresent()) {
             throw new DuplicateEmailException("This email already exists");
-        } else {
-            oldPS.setEmail(newPS.getEmail());
         }
 
-        if (!oldPS.getPhone().equals(newPS.getPhone()))
-            oldPS.setPhone(newPS.getPhone());
-
-        if (!oldPS.getFullName().equals(newPS.getEmail()))
-            oldPS.setFullName(newPS.getFullName());
+        oldPS.setEmail(newPS.getEmail());
+        oldPS.setPhone(newPS.getPhone());
+        oldPS.setFullName(newPS.getFullName());
     }
 
 
+    // FOR TESTING
+
+//    public PotentialStudent createPotentialStudent(String email, String phone, String fullName) {
+//        PotentialStudent student = new PotentialStudent();
+//
+//        student.setEmail(email);
+//        student.setPhone(phone);
+//        student.setFullName(fullName);
+//
+//        return student;
+//    }
 }

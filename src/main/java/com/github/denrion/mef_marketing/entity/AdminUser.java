@@ -25,10 +25,10 @@ public class AdminUser extends AbstractEntityWithId {
     // FIELDS
 
     @Basic
-    @Column(name = "full_name", length = 80)
-    @Size(max = 80, message = "max 80")
-    @FormParam("fullName")
-    private String fullName;
+    @Column(name = "username")
+    @NotBlank(message = "Not Blank")
+    @FormParam("username")
+    private String username;
 
     @Basic
     @Column(name = "password")
@@ -37,23 +37,10 @@ public class AdminUser extends AbstractEntityWithId {
     private String password;
 
     @Basic
-    @Column(name = "username")
-    @NotBlank(message = "Not Blank")
-    @FormParam("username")
-    private String username;
-
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<EntranceTest> tests = new ArrayList<>();
-//
-//    public void addEntranceTest(EntranceTest test) {
-//        tests.add(test);
-//        test.setUser(this);
-//    }
-//
-//    public void removeEntranceTest(EntranceTest test) {
-//        tests.remove(test);
-//        test.setUser(null);
-//    }
+    @Column(name = "full_name", length = 80)
+    @Size(max = 80, message = "max 80")
+    @FormParam("fullName")
+    private String fullName;
 
 
     // GETTERS AND SETTERS

@@ -1,6 +1,5 @@
 package com.github.denrion.mef_marketing.rest;
 
-import com.github.denrion.mef_marketing.entity.PotentialStudent;
 import com.github.denrion.mef_marketing.entity.PotentialStudentPopup;
 import com.github.denrion.mef_marketing.service.PotentialStudentPopupService;
 
@@ -13,7 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
-@Path("potentialStudentsPopup")
+@Path("popup")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class PotentialStudentPopupResource {
@@ -25,7 +24,7 @@ public class PotentialStudentPopupResource {
     UriInfo uriInfo;
 
     @GET
-    public Response getAllPS() {
+    public Response getAll() {
         return Response
                 .ok(psPopupService.getAll())
                 .build();
@@ -33,7 +32,7 @@ public class PotentialStudentPopupResource {
 
     @GET
     @Path("{id: \\d+}")
-    public Response getPSById(@PathParam("id") Long id) {
+    public Response getById(@PathParam("id") Long id) {
         PotentialStudentPopup student = psPopupService.getById(id)
                 .orElseThrow(NotFoundException::new);
 
@@ -43,21 +42,8 @@ public class PotentialStudentPopupResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response createPS(@BeanParam @Valid PotentialStudent ps,
-                             @BeanParam @Valid PotentialStudentPopup psPopup) {
+    public Response create(@Valid PotentialStudentPopup psPopup) {
 
-        // ***************************************** TEST DATA ******************************************** //
-        PotentialStudentPopup ps1 = psPopupService.createPSPopup("email7@gmail.com", "phone7", "Student7",
-                "2019-04-07", "2019-04-07");
-        psPopupService.save(ps1);
-
-        PotentialStudentPopup ps2 = psPopupService.createPSPopup("email8@gmail.com", "phone8", "Student8",
-                "2019-04-08", "2019-04-08");
-        psPopupService.save(ps2);
-        // ****************************************** DELETE LATER **************************************** //
-
-        psPopup.setPotentialStudent(ps);
         psPopupService.save(psPopup);
 
         URI uri = uriInfo.getAbsolutePathBuilder()
@@ -73,12 +59,8 @@ public class PotentialStudentPopupResource {
 
     @PUT
     @Path("{id: \\d+}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response updatePS(@PathParam("id") Long id,
-                             @BeanParam @Valid PotentialStudent ps,
-                             @BeanParam @Valid PotentialStudentPopup psPopup) {
-
-        psPopup.setPotentialStudent(ps);
+    public Response update(@PathParam("id") Long id,
+                           @Valid PotentialStudentPopup psPopup) {
 
         PotentialStudentPopup student = psPopupService.update(psPopup, id)
                 .orElseThrow(NotFoundException::new);
@@ -90,7 +72,7 @@ public class PotentialStudentPopupResource {
 
     @DELETE
     @Path("{id: \\d+}")
-    public Response deletePS(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         psPopupService.delete(id);
 
         return Response

@@ -7,8 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.NotFoundException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,35 +71,6 @@ public class PotentialStudentPhoneService implements GenericService<PotentialStu
         entityManager.remove(psPhone);
     }
 
-    // FOR TESTING
-    public PotentialStudentPhone createPSPhone(String email, String phone, String fullName,
-                                               String city, String heardOf, int studyYear,
-                                               String dateVisit, BigDecimal price, String whoCalledMef,
-                                               String enrollment) {
-
-        PotentialStudentPhone psPhone = new PotentialStudentPhone();
-
-        psPhone.setPotentialStudent(studentService
-                .createPotentialStudent(email, phone, fullName));
-
-        psPhone.setCity(city);
-        psPhone.setHeardOf(heardOf);
-
-        psPhone.setStudyYear(studyYear);
-
-        if (!dateVisit.trim().isEmpty()) {
-            psPhone.setDateVisit(LocalDate.parse(dateVisit));
-        }
-
-        psPhone.setPrice(price);
-        psPhone.setWhoCalledMef(whoCalledMef);
-        psPhone.setEnrollment(enrollment);
-
-        psPhone.setPrice(price);
-
-        return psPhone;
-    }
-
     private void updatePSPhoneFields(PotentialStudentPhone oldPSPhone, PotentialStudentPhone newPSPhone) {
         oldPSPhone.setCity(newPSPhone.getCity());
         oldPSPhone.setHeardOf(newPSPhone.getHeardOf());
@@ -111,4 +80,35 @@ public class PotentialStudentPhoneService implements GenericService<PotentialStu
         oldPSPhone.setWhoCalledMef(newPSPhone.getWhoCalledMef());
         oldPSPhone.setEnrollment(newPSPhone.getEnrollment());
     }
+
+
+    // FOR TESTING
+//    public PotentialStudentPhone createPSPhone(String email, String phone, String fullName,
+//                                               String city, String heardOf, int studyYear,
+//                                               String dateVisit, BigDecimal price, String whoCalledMef,
+//                                               String enrollment) {
+//
+//        PotentialStudentPhone psPhone = new PotentialStudentPhone();
+//
+//        psPhone.setPotentialStudent(studentService
+//                .createPotentialStudent(email, phone, fullName));
+//
+//        psPhone.setCity(city);
+//        psPhone.setHeardOf(heardOf);
+//
+//        psPhone.setStudyYear(studyYear);
+//
+//        if (!dateVisit.trim().isEmpty()) {
+//            psPhone.setDateVisit(LocalDate.parse(dateVisit));
+//        }
+//
+//        psPhone.setPrice(price);
+//        psPhone.setWhoCalledMef(whoCalledMef);
+//        psPhone.setEnrollment(enrollment);
+//
+//        psPhone.setPrice(price);
+//
+//        return psPhone;
+//    }
+
 }

@@ -1,11 +1,8 @@
 package com.github.denrion.mef_marketing.entity;
 
-import com.github.denrion.mef_marketing.config.LocalDateAdapter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.ws.rs.FormParam;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 import static com.github.denrion.mef_marketing.entity.PotentialStudentPopup.GET_ALL_POTENTIAL_STUDENTS_POPUP;
@@ -33,14 +30,10 @@ public class PotentialStudentPopup extends AbstractEntityWithoutId {
 
     @Basic
     @Column(name = "date_contact")
-    @FormParam("dateContact")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateContact;
 
     @Basic
     @Column(name = "date_sign_up")
-    @FormParam("dateSignUp")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateSignUp;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

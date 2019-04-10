@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.NotFoundException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,29 +70,30 @@ public class PotentialStudentEformService implements GenericService<PotentialStu
         entityManager.remove(psEform);
     }
 
-    // FOR TESTING
-
-    public PotentialStudentEform createPSEform(String email, String phone, String fullName,
-                                               String dateContact, String dateSignUp) {
-
-        PotentialStudentEform psEform = new PotentialStudentEform();
-
-        psEform.setPotentialStudent(studentService
-                .createPotentialStudent(email, phone, fullName));
-
-        if (!dateContact.trim().isEmpty()) {
-            psEform.setDateContact(LocalDate.parse(dateContact));
-        }
-
-        if (!dateSignUp.trim().isEmpty()) {
-            psEform.setDateSignUp(LocalDate.parse(dateSignUp));
-        }
-
-        return psEform;
-    }
-
     private void updatePSEformFields(PotentialStudentEform oldPSEform, PotentialStudentEform newPSEform) {
         oldPSEform.setDateContact(newPSEform.getDateContact());
         oldPSEform.setDateSignUp(newPSEform.getDateSignUp());
     }
+
+
+    // FOR TESTING
+
+//    public PotentialStudentEform createPSEform(String email, String phone, String fullName,
+//                                               String dateContact, String dateSignUp) {
+//
+//        PotentialStudentEform psEform = new PotentialStudentEform();
+//
+//        psEform.setPotentialStudent(studentService
+//                .createPotentialStudent(email, phone, fullName));
+//
+//        if (!dateContact.trim().isEmpty()) {
+//            psEform.setDateContact(LocalDate.parse(dateContact));
+//        }
+//
+//        if (!dateSignUp.trim().isEmpty()) {
+//            psEform.setDateSignUp(LocalDate.parse(dateSignUp));
+//        }
+//
+//        return psEform;
+//    }
 }

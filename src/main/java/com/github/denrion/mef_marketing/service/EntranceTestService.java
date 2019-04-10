@@ -1,15 +1,12 @@
 package com.github.denrion.mef_marketing.service;
 
-import com.github.denrion.mef_marketing.entity.AdminUser;
 import com.github.denrion.mef_marketing.entity.EntranceTest;
-import com.github.denrion.mef_marketing.entity.PotentialStudent;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.NotFoundException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +38,7 @@ public class EntranceTestService implements GenericService<EntranceTest> {
 
     @Override
     public EntranceTest save(EntranceTest test) {
-        // check if test already exists in the DB
-
+        // TODO check if test already exists in the DB
         entityManager.persist(test);
 
         return test;
@@ -66,27 +62,6 @@ public class EntranceTestService implements GenericService<EntranceTest> {
         entityManager.remove(test);
     }
 
-    public EntranceTest createEntranceTest(String comment, String dateDeal, String dateMailSent,
-                                           String mailContent, PotentialStudent ps, AdminUser user) {
-        EntranceTest test = new EntranceTest();
-
-        test.setComment(comment);
-
-        if (!dateDeal.trim().isEmpty()) {
-            test.setDateDeal(LocalDate.parse(dateDeal));
-        }
-
-        if (!dateMailSent.trim().isEmpty()) {
-            test.setDateMailSent(LocalDate.parse(dateMailSent));
-        }
-
-        test.setMailContent(mailContent);
-        test.setPotentialStudent(ps);
-        test.setUser(user);
-
-        return test;
-    }
-
     private void updateTestFields(EntranceTest oldTest, EntranceTest newTest) {
         oldTest.setComment(newTest.getComment());
         oldTest.setDateDeal(newTest.getDateDeal());
@@ -95,6 +70,28 @@ public class EntranceTestService implements GenericService<EntranceTest> {
         oldTest.setPotentialStudent(newTest.getPotentialStudent());
         oldTest.setUser(newTest.getUser());
     }
+
+
+//    public EntranceTest createEntranceTest(String comment, String dateDeal, String dateMailSent,
+//                                           String mailContent, PotentialStudent ps, AdminUser user) {
+//        EntranceTest test = new EntranceTest();
+//
+//        test.setComment(comment);
+//
+//        if (!dateDeal.trim().isEmpty()) {
+//            test.setDateDeal(LocalDate.parse(dateDeal));
+//        }
+//
+//        if (!dateMailSent.trim().isEmpty()) {
+//            test.setDateMailSent(LocalDate.parse(dateMailSent));
+//        }
+//
+//        test.setMailContent(mailContent);
+//        test.setPotentialStudent(ps);
+//        test.setUser(user);
+//
+//        return test;
+//    }
 
 
 }

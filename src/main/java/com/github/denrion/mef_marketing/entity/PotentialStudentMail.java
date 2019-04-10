@@ -1,12 +1,10 @@
 package com.github.denrion.mef_marketing.entity;
 
-import com.github.denrion.mef_marketing.config.LocalDateAdapter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.ws.rs.FormParam;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -35,37 +33,30 @@ public class PotentialStudentMail extends AbstractEntityWithoutId {
 
     @Basic
     @Column(name = "date_mail_received")
-    @FormParam("dateMailReceived")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateMailReceived;
 
     @Basic
     @Column(name = "date_mail_received_on_upis")
-    @FormParam("dateMailReceivedOnUpis")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateMailReceivedOnUpis;
 
     @Basic
     @Column(name = "date_reply")
-    @FormParam("dateReply")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateReply;
 
     @Basic
     @Column(name = "email_which_received")
-    @FormParam("emailWhichReceived")
     @Email(message = "It must be a valid email")
     private String emailWhichReceived;
 
     @Basic
     @Column(name = "price", precision = 6, scale = 2)
-    @FormParam("price")
     private BigDecimal price;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "potential_student_id", nullable = false, insertable = false,
             foreignKey = @ForeignKey(name = "fk_potential_student_mail"))
     @MapsId
+    @Valid
     private PotentialStudent potentialStudent;
 
 

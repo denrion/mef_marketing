@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.NotFoundException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,29 +67,31 @@ public class PotentialStudentPopupService implements GenericService<PotentialStu
         entityManager.remove(psPopup);
     }
 
-    // FOR TESTING
-
-    public PotentialStudentPopup createPSPopup(String email, String phone, String fullName,
-                                               String dateContact, String dateSignUp) {
-
-        PotentialStudentPopup psPopup = new PotentialStudentPopup();
-
-        psPopup.setPotentialStudent(studentService
-                .createPotentialStudent(email, phone, fullName));
-
-        if (!dateContact.trim().isEmpty()) {
-            psPopup.setDateContact(LocalDate.parse(dateContact));
-        }
-
-        if (!dateSignUp.trim().isEmpty()) {
-            psPopup.setDateSignUp(LocalDate.parse(dateSignUp));
-        }
-
-        return psPopup;
-    }
-
     private void updatePSPopupFields(PotentialStudentPopup oldPSPopup, PotentialStudentPopup newPSPopup) {
         oldPSPopup.setDateContact(newPSPopup.getDateContact());
         oldPSPopup.setDateSignUp(newPSPopup.getDateSignUp());
     }
+
+    // FOR TESTING
+
+//    public PotentialStudentPopup createPSPopup(String email, String phone, String fullName,
+//                                               String dateContact, String dateSignUp) {
+//
+//        PotentialStudentPopup psPopup = new PotentialStudentPopup();
+//
+//        psPopup.setPotentialStudent(studentService
+//                .createPotentialStudent(email, phone, fullName));
+//
+//        if (!dateContact.trim().isEmpty()) {
+//            psPopup.setDateContact(LocalDate.parse(dateContact));
+//        }
+//
+//        if (!dateSignUp.trim().isEmpty()) {
+//            psPopup.setDateSignUp(LocalDate.parse(dateSignUp));
+//        }
+//
+//        return psPopup;
+//    }
+
+
 }

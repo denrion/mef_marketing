@@ -1,11 +1,8 @@
 package com.github.denrion.mef_marketing.entity;
 
-import com.github.denrion.mef_marketing.config.LocalDateAdapter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.ws.rs.FormParam;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -28,24 +25,18 @@ public class EntranceTest extends AbstractEntityWithId {
 
     @Basic
     @Column(name = "date_deal")
-    @FormParam("dateDeal")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateDeal;
 
     @Basic
     @Column(name = "date_mail_sent")
-    @FormParam("dateMailSent")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateMailSent;
 
     @Basic
     @Column(name = "mail_content", columnDefinition = "TEXT")
-    @FormParam("mailContent")
     private String mailContent;
 
     @Basic
     @Column(name = "comment", columnDefinition = "TEXT")
-    @FormParam("comment")
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

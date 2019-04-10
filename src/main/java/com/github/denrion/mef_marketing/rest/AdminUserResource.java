@@ -24,7 +24,7 @@ public class AdminUserResource {
     private UriInfo uriInfo;
 
     @GET
-    public Response getAllUsers() {
+    public Response getAll() {
         return Response
                 .ok(userService.getAll())
                 .build();
@@ -32,7 +32,7 @@ public class AdminUserResource {
 
     @GET
     @Path("{id: \\d+}")
-    public Response getUserById(@PathParam("id") Long id) {
+    public Response getById(@PathParam("id") Long id) {
         AdminUser user = userService.getById(id)
                 .orElseThrow(NotFoundException::new);
 
@@ -42,8 +42,7 @@ public class AdminUserResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response createUser(@BeanParam @Valid AdminUser user) {
+    public Response create(@Valid AdminUser user) {
         AdminUser adminUser = userService.save(user);
 
         URI uri = uriInfo.getAbsolutePathBuilder()
@@ -59,8 +58,7 @@ public class AdminUserResource {
 
     @PUT
     @Path("{id: \\d+}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response updateUser(@PathParam("id") Long id, @BeanParam @Valid AdminUser user) {
+    public Response update(@PathParam("id") Long id, @Valid AdminUser user) {
         AdminUser adminUser = userService.update(user, id)
                 .orElseThrow(NotFoundException::new);
 
@@ -71,7 +69,7 @@ public class AdminUserResource {
 
     @DELETE
     @Path("{id: \\d+}")
-    public Response deleteUser(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         userService.delete(id);
 
         return Response

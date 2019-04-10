@@ -1,6 +1,5 @@
 package com.github.denrion.mef_marketing.rest;
 
-import com.github.denrion.mef_marketing.entity.PotentialStudent;
 import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
 import com.github.denrion.mef_marketing.service.PotentialStudentMailService;
 
@@ -11,10 +10,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.math.BigDecimal;
 import java.net.URI;
 
-@Path("potentialStudentsMail")
+@Path("mail")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class PotentialStudentMailResource {
@@ -26,7 +24,7 @@ public class PotentialStudentMailResource {
     UriInfo uriInfo;
 
     @GET
-    public Response getAllPS() {
+    public Response getAll() {
         return Response
                 .ok(psMailService.getAll())
                 .build();
@@ -34,7 +32,7 @@ public class PotentialStudentMailResource {
 
     @GET
     @Path("{id: \\d+}")
-    public Response getPSById(@PathParam("id") Long id) {
+    public Response getById(@PathParam("id") Long id) {
         PotentialStudentMail student = psMailService.getById(id)
                 .orElseThrow(NotFoundException::new);
 
@@ -44,23 +42,8 @@ public class PotentialStudentMailResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response createPS(@BeanParam @Valid PotentialStudent ps,
-                             @BeanParam @Valid PotentialStudentMail psm) {
+    public Response create(@Valid PotentialStudentMail psm) {
 
-        // ***************************************** TEST DATA ******************************************** //
-        PotentialStudentMail ps1 = psMailService.createPSMail("email1@gmail.com", "phone1", "Student1",
-                "2019-04-07", "2019-04-07",
-                "mef@gmail.com", "2019-04-07", BigDecimal.valueOf(1200.00));
-        psMailService.save(ps1);
-
-        PotentialStudentMail ps2 = psMailService.createPSMail("email2@gmail.com", "phone2", "Student2",
-                "2019-04-08", "2019-04-08",
-                "mef@gmail.com", "2019-04-08", BigDecimal.valueOf(1200.00));
-        psMailService.save(ps2);
-        // ****************************************** DELETE LATER **************************************** //
-
-        psm.setPotentialStudent(ps);
         psMailService.save(psm);
 
         URI uri = uriInfo.getAbsolutePathBuilder()
@@ -76,12 +59,8 @@ public class PotentialStudentMailResource {
 
     @PUT
     @Path("{id: \\d+}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response updatePS(@PathParam("id") Long id,
-                             @BeanParam @Valid PotentialStudent ps,
-                             @BeanParam @Valid PotentialStudentMail psm) {
-
-        psm.setPotentialStudent(ps);
+    public Response update(@PathParam("id") Long id,
+                           @Valid PotentialStudentMail psm) {
 
         PotentialStudentMail student = psMailService.update(psm, id)
                 .orElseThrow(NotFoundException::new);
@@ -93,11 +72,12 @@ public class PotentialStudentMailResource {
 
     @DELETE
     @Path("{id: \\d+}")
-    public Response deletePS(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         psMailService.delete(id);
 
         return Response
                 .ok()
                 .build();
     }
+
 }

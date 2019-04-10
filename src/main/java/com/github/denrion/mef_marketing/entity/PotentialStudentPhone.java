@@ -1,11 +1,7 @@
 package com.github.denrion.mef_marketing.entity;
 
-import com.github.denrion.mef_marketing.config.LocalDateAdapter;
-
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import javax.ws.rs.FormParam;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -34,39 +30,32 @@ public class PotentialStudentPhone extends AbstractEntityWithoutId {
 
     @Basic
     @Column(name = "city", length = 100)
-    @FormParam("city")
     @Size(max = 100)
     private String city;
 
     @Basic
     @Column(name = "heard_of", columnDefinition = "TEXT")
-    @FormParam("heardOf")
     private String heardOf;
 
     @Basic
     @Column(name = "study_year")
-    @FormParam("studyYear")
     private int studyYear;
 
     @Basic
     @Column(name = "date_visit")
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
-    @FormParam("dateVisit")
     private LocalDate dateVisit;
 
     @Basic
-    @Column(name = "price", precision = 6, scale = 2)
-    @FormParam("price")
+    @Column(name = "price",
+            precision = 6, scale = 2)
     private BigDecimal price;
 
     @Basic
     @Column(name = "who_called_mef")
-    @FormParam("whoCalledMef")
     private String whoCalledMef;
 
     @Basic
     @Column(name = "enrollment", columnDefinition = "TEXT")
-    @FormParam("enrollment")
     private String enrollment;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

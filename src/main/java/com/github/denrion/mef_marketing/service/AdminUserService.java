@@ -50,10 +50,6 @@ public class AdminUserService implements GenericService<AdminUser> {
         AdminUser oldUser = getById(id)
                 .orElseThrow(NotFoundException::new);
 
-        if (oldUser.getUsername().equals(newUser.getUsername())) {
-            throw new DuplicateUsernameException("This username already exists");
-        }
-
         updateAdminUser(oldUser, newUser);
 
         return Optional.ofNullable(entityManager.merge(oldUser));
@@ -82,6 +78,11 @@ public class AdminUserService implements GenericService<AdminUser> {
     }
 
     private void updateAdminUser(AdminUser oldUser, AdminUser newUser) {
+        if (!oldUser.getUsername().equals(newUser.getUsername())
+                && isUsernameAlreadyInUse(newUser.getUsername())) {
+            throw new DuplicateUsernameException("This username already exists");
+        }
+
         oldUser.setUsername(newUser.getUsername());
         oldUser.setPassword(newUser.getPassword());
         oldUser.setFullName(newUser.getFullName());

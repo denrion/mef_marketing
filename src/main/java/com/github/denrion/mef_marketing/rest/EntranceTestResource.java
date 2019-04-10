@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
-@Path("entranceTests")
+@Path("tests")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class EntranceTestResource {
@@ -34,7 +34,7 @@ public class EntranceTestResource {
     UriInfo uriInfo;
 
     @GET
-    public Response getAllTests() {
+    public Response getAll() {
         return Response
                 .ok(testService.getAll())
                 .build();
@@ -42,7 +42,7 @@ public class EntranceTestResource {
 
     @GET
     @Path("{id: \\d+}")
-    public Response getTestById(@PathParam("id") Long id) {
+    public Response getById(@PathParam("id") Long id) {
         EntranceTest test = testService.getById(id)
                 .orElseThrow(NotFoundException::new);
 
@@ -52,10 +52,9 @@ public class EntranceTestResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response createTest(@BeanParam @Valid EntranceTest test,
-                               @FormParam("ps_id") Long ps_id,
-                               @FormParam("user_id") Long user_id) {
+    public Response create(@Valid EntranceTest test,
+                           @QueryParam("ps_id") Long ps_id,
+                           @QueryParam("user_id") Long user_id) {
 
         AdminUser user = userService.getById(user_id)
                 .orElseThrow(NotFoundException::new);
@@ -82,11 +81,10 @@ public class EntranceTestResource {
 
     @PUT
     @Path("{id: \\d+}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response updateTest(@PathParam("id") Long id,
-                               @BeanParam @Valid EntranceTest test,
-                               @FormParam("ps_id") Long ps_id,
-                               @FormParam("user_id") Long user_id) {
+    public Response update(@PathParam("id") Long id,
+                           @Valid EntranceTest test,
+                           @QueryParam("ps_id") Long ps_id,
+                           @QueryParam("user_id") Long user_id) {
 
         AdminUser user = userService.getById(user_id)
                 .orElseThrow(NotFoundException::new);
@@ -107,7 +105,7 @@ public class EntranceTestResource {
 
     @DELETE
     @Path("{id: \\d+}")
-    public Response deleteTest(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         testService.delete(id);
 
         return Response
