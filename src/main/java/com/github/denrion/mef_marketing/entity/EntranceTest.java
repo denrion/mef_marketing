@@ -6,20 +6,24 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import static com.github.denrion.mef_marketing.entity.EntranceTest.*;
+
 @Entity(name = "EntranceTest")
 @Table(name = "entrance_test")
 @DynamicUpdate // HIBERNATE ONLY!!!!!!!!!!!
-@NamedQuery(name = EntranceTest.GET_ALL_ENTRANCE_TESTS,
+@NamedQuery(name = GET_ALL_ENTRANCE_TESTS,
         query = "SELECT test FROM EntranceTest test JOIN FETCH test.potentialStudent JOIN FETCH test.user")
-@NamedQuery(name = EntranceTest.GET_ENTRANCE_TEST_BY_ID,
+@NamedQuery(name = GET_ENTRANCE_TEST_BY_ID,
         query = "SELECT test FROM EntranceTest test JOIN FETCH test.potentialStudent JOIN FETCH test.user WHERE test.id = :id")
+@NamedQuery(name = GET_TESTS_BY_POTENTIAL_STUDENT_ID,
+        query = "SELECT test FROM EntranceTest test WHERE test.potentialStudent.id = :ps_id")
 public class EntranceTest extends AbstractEntityWithId {
 
     // NAMED QUERIES
 
     public static final String GET_ALL_ENTRANCE_TESTS = "EntranceTest.getAll";
     public static final String GET_ENTRANCE_TEST_BY_ID = "EntranceTest.getById";
-
+    public static final String GET_TESTS_BY_POTENTIAL_STUDENT_ID = "EntranceTest.getByPSId";
 
     // FIELDS
 

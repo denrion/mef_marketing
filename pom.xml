@@ -12,6 +12,7 @@
         <failOnMissingWebXml>false</failOnMissingWebXml>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.java>1.8</version.java>
         <hibernate.version>5.4.2.Final</hibernate.version>
     </properties>
 
@@ -22,6 +23,12 @@
             <artifactId>javaee-api</artifactId>
             <version>8.0</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.15</version>
         </dependency>
 
         <dependency>
@@ -44,6 +51,50 @@
 
     <build>
         <finalName>mef_marketing</finalName>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.tomee.maven</groupId>
+                    <artifactId>tomee-maven-plugin</artifactId>
+                    <version>8.0.0-M2</version>
+                    <executions>
+                        <execution>
+                            <id>executable-jar</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${version.java}</source>
+                    <target>${version.java}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomee.maven</groupId>
+                <artifactId>tomee-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
+
 
 </project>

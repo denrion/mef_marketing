@@ -21,15 +21,15 @@ public class AdminUserService implements GenericService<AdminUser> {
     EntityManager entityManager;
 
     @Override
+    public Optional<AdminUser> getById(Long id) {
+        return Optional.ofNullable(entityManager.find(AdminUser.class, id));
+    }
+
+    @Override
     public List<AdminUser> getAll() {
         return entityManager
                 .createNamedQuery(AdminUser.GET_ALL_USERS, AdminUser.class)
                 .getResultList();
-    }
-
-    @Override
-    public Optional<AdminUser> getById(Long id) {
-        return Optional.ofNullable(entityManager.find(AdminUser.class, id));
     }
 
     @Override

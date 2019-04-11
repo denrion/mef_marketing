@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="mef_marketing_v1@localhost" uuid="94c18cb8-f2fb-4062-ac91-2085ecac9a3c">
-      <driver-ref>mysql</driver-ref>
+    <data-source source="LOCAL" name="mef_marketing_v1@localhost" uuid="ae1718ab-4dfd-430c-8abf-d94e3fe62c8d">
+      <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/mef_marketing_v1</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
-        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="zeroDateTimeBehavior" value="CONVERT_TO_NULL" />
         <property name="tinyInt1isBit" value="false" />
         <property name="characterEncoding" value="utf8" />
         <property name="characterSetResults" value="utf8" />
