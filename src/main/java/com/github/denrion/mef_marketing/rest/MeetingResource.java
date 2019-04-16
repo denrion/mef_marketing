@@ -6,6 +6,10 @@ import com.github.denrion.mef_marketing.service.MeetingService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.stream.JsonCollectors;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -13,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.List;
 
 @Path("meeting")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -28,10 +33,27 @@ public class MeetingResource {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    ResourceUriBuilder resourceUriBuilder;
+
     @GET
+    @Path("")
     public Response getAll() {
+        final List<Meeting> meetings = meetingService.getAll();
+
+        if (meetings == null || meetings.isEmpty()) {
+            return Response
+                    .noContent()
+                    .build();
+        }
+
+        JsonArray data = meetings.stream()
+                .map(this::toJson)
+                .collect(JsonCollectors.toJsonArray());
+
         return Response
-                .ok(meetingService.getAll())
+                .ok()
+                .entity(data)
                 .build();
     }
 
@@ -42,7 +64,7 @@ public class MeetingResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(meeting)
+                .ok(toJson(meeting))
                 .build();
     }
 
@@ -54,16 +76,12 @@ public class MeetingResource {
                 .orElseThrow(NotFoundException::new);
 
         meeting.setPotentialStudent(student);
-        meetingService.save(meeting);
 
-        URI uri = uriInfo.getAbsolutePathBuilder()
-                .path(meeting.getId().toString())
-                .build();
+        final Meeting meetingSaved = meetingService.save(meeting);
 
         return Response
-                .created(uri)
-                .entity(meeting)
                 .status(Response.Status.CREATED)
+                .entity(toJson(meetingSaved))
                 .build();
     }
 
@@ -77,11 +95,11 @@ public class MeetingResource {
                 .orElseThrow(NotFoundException::new);
 
         meeting.setPotentialStudent(student);
-        Meeting m = meetingService.update(meeting, id)
+        Meeting meetingUpdated = meetingService.update(meeting, id)
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(m)
+                .ok(toJson(meetingUpdated))
                 .build();
     }
 
@@ -94,5 +112,34 @@ public class MeetingResource {
                 .ok()
                 .build();
     }
+
+    private JsonObject toJson(Meeting meeting) {
+        URI self = resourceUriBuilder
+                .createResourceUri(MeetingResource.class, "getById",
+                        meeting.getId(), uriInfo);
+
+        URI others = resourceUriBuilder
+                .createResourceUri(MeetingResource.class, "getAll",
+                        uriInfo);
+
+        return Json.createObjectBuilder()
+                .add("email", meeting.getPotentialStudent().getEmail())
+                .add("fullName", meeting.getPotentialStudent().getFullName())
+                .add("phone", meeting.getPotentialStudent().getPhone())
+                .add("dateDeal", meeting.getDateDeal() != null ? meeting.getDateDeal().toString() : "")
+                .add("comment", meeting.getComment())
+                .add("visitTime", meeting.getVisitTime())
+                .add("whoInvited", meeting.getWhoInvited())
+                .add("_links", Json.createArrayBuilder()
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "self")
+                                .add("href", self.toString()))
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "all")
+                                .add("href", others.toString())
+                        )
+                ).build();
+    }
+
 
 }

@@ -4,6 +4,10 @@ import com.github.denrion.mef_marketing.entity.PotentialStudentEform;
 import com.github.denrion.mef_marketing.service.PotentialStudentEformService;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.stream.JsonCollectors;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -11,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.List;
 
 @Path("eform")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -23,10 +28,27 @@ public class PotentialStudentEformResource {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    ResourceUriBuilder resourceUriBuilder;
+
     @GET
+    @Path("")
     public Response getAll() {
+        final List<PotentialStudentEform> students = psEformService.getAll();
+
+        if (students == null || students.isEmpty()) {
+            return Response
+                    .noContent()
+                    .build();
+        }
+
+        JsonArray data = students.stream()
+                .map(this::toJson)
+                .collect(JsonCollectors.toJsonArray());
+
         return Response
-                .ok(psEformService.getAll())
+                .ok()
+                .entity(data)
                 .build();
     }
 
@@ -37,23 +59,18 @@ public class PotentialStudentEformResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(student)
+                .ok(toJson(student))
                 .build();
     }
 
     @POST
     public Response create(@Valid PotentialStudentEform pse) {
 
-        psEformService.save(pse);
-
-        URI uri = uriInfo.getAbsolutePathBuilder()
-                .path(pse.getId().toString())
-                .build();
+        final PotentialStudentEform student = psEformService.save(pse);
 
         return Response
-                .created(uri)
-                .entity(pse)
                 .status(Response.Status.CREATED)
+                .entity(toJson(student))
                 .build();
     }
 
@@ -66,7 +83,7 @@ public class PotentialStudentEformResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(student)
+                .ok(toJson(student))
                 .build();
     }
 
@@ -79,4 +96,31 @@ public class PotentialStudentEformResource {
                 .ok()
                 .build();
     }
+
+    private JsonObject toJson(PotentialStudentEform psEform) {
+        URI self = resourceUriBuilder
+                .createResourceUri(PotentialStudentEformResource.class, "getById",
+                        psEform.getId(), uriInfo);
+
+        URI others = resourceUriBuilder
+                .createResourceUri(PotentialStudentEformResource.class, "getAll",
+                        uriInfo);
+
+        return Json.createObjectBuilder()
+                .add("email", psEform.getPotentialStudent().getEmail())
+                .add("fullName", psEform.getPotentialStudent().getFullName())
+                .add("phone", psEform.getPotentialStudent().getPhone())
+                .add("dateContact", psEform.getDateContact() != null ? psEform.getDateContact().toString() : "")
+                .add("dateSignUp", psEform.getDateSignUp() != null ? psEform.getDateSignUp().toString() : "")
+                .add("_links", Json.createArrayBuilder()
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "self")
+                                .add("href", self.toString()))
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "all")
+                                .add("href", others.toString())
+                        )
+                ).build();
+    }
+
 }

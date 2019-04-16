@@ -8,6 +8,10 @@ import com.github.denrion.mef_marketing.service.CommentService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.stream.JsonCollectors;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -15,12 +19,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.List;
 
 @Path("comments")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CommentResource {
-
 
     @Inject
     CommentService commentService;
@@ -31,14 +35,30 @@ public class CommentResource {
     @Inject
     PotentialStudentService studentService;
 
-
     @Context
     private UriInfo uriInfo;
 
+    @Inject
+    ResourceUriBuilder resourceUriBuilder;
+
     @GET
+    @Path("")
     public Response getAll() {
+        final List<Comment> comments = commentService.getAll();
+
+        if (comments == null || comments.isEmpty()) {
+            return Response
+                    .noContent()
+                    .build();
+        }
+
+        JsonArray data = comments.stream()
+                .map(this::toJson)
+                .collect(JsonCollectors.toJsonArray());
+
         return Response
-                .ok(commentService.getAll())
+                .ok()
+                .entity(data)
                 .build();
     }
 
@@ -50,15 +70,28 @@ public class CommentResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(comment)
+                .ok(toJson(comment))
                 .build();
     }
 
     @GET
     @Path("student/{ps_id: \\d+}")
     public Response getAllByPSId(@PathParam("ps_id") Long ps_id) {
+        final List<Comment> comments = commentService.getAllByPSId(ps_id);
+
+        if (comments == null || comments.isEmpty()) {
+            return Response
+                    .noContent()
+                    .build();
+        }
+
+        JsonArray data = comments.stream()
+                .map(this::toJson)
+                .collect(JsonCollectors.toJsonArray());
+
         return Response
-                .ok(commentService.getAllByPSId(ps_id))
+                .ok()
+                .entity(data)
                 .build();
     }
 
@@ -78,14 +111,9 @@ public class CommentResource {
 
         Comment comment = commentService.save(comm);
 
-        URI uri = uriInfo.getAbsolutePathBuilder()
-                .path(comment.getId().toString())
-                .build();
-
         return Response
-                .created(uri)
-                .entity(comment)
                 .status(Response.Status.CREATED)
+                .entity(toJson(comment))
                 .build();
     }
 
@@ -109,7 +137,7 @@ public class CommentResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(comment)
+                .ok(toJson(comment))
                 .build();
     }
 
@@ -122,4 +150,30 @@ public class CommentResource {
                 .ok()
                 .build();
     }
+
+    private JsonObject toJson(Comment comment) {
+        URI self = resourceUriBuilder
+                .createResourceUri(CommentResource.class, "getById",
+                        comment.getId(), uriInfo);
+
+        URI others = resourceUriBuilder
+                .createResourceUri(CommentResource.class, "getAll",
+                        uriInfo);
+
+        return Json.createObjectBuilder()
+                .add("email", comment.getPotentialStudent().getEmail())
+                .add("studentFullName", comment.getPotentialStudent().getFullName())
+                .add("comment", comment.getComment())
+                .add("userFullName", comment.getUser().getFullName())
+                .add("_links", Json.createArrayBuilder()
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "self")
+                                .add("href", self.toString()))
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "all")
+                                .add("href", others.toString())
+                        )
+                ).build();
+    }
+
 }

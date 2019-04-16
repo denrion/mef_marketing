@@ -15,4 +15,9 @@ public class AbstractEntityWithId extends AbstractEntityWithoutId {
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

@@ -4,6 +4,10 @@ import com.github.denrion.mef_marketing.entity.PotentialStudentPopup;
 import com.github.denrion.mef_marketing.service.PotentialStudentPopupService;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.stream.JsonCollectors;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -11,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.List;
 
 @Path("popup")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -23,10 +28,27 @@ public class PotentialStudentPopupResource {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    ResourceUriBuilder resourceUriBuilder;
+
     @GET
+    @Path("")
     public Response getAll() {
+        final List<PotentialStudentPopup> students = psPopupService.getAll();
+
+        if (students == null || students.isEmpty()) {
+            return Response
+                    .noContent()
+                    .build();
+        }
+
+        JsonArray data = students.stream()
+                .map(this::toJson)
+                .collect(JsonCollectors.toJsonArray());
+
         return Response
-                .ok(psPopupService.getAll())
+                .ok()
+                .entity(data)
                 .build();
     }
 
@@ -37,23 +59,18 @@ public class PotentialStudentPopupResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(student)
+                .ok(toJson(student))
                 .build();
     }
 
     @POST
     public Response create(@Valid PotentialStudentPopup psPopup) {
 
-        psPopupService.save(psPopup);
-
-        URI uri = uriInfo.getAbsolutePathBuilder()
-                .path(psPopup.getId().toString())
-                .build();
+        final PotentialStudentPopup student = psPopupService.save(psPopup);
 
         return Response
-                .created(uri)
-                .entity(psPopup)
                 .status(Response.Status.CREATED)
+                .entity(toJson(student))
                 .build();
     }
 
@@ -66,7 +83,7 @@ public class PotentialStudentPopupResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(student)
+                .ok(toJson(student))
                 .build();
     }
 
@@ -79,4 +96,31 @@ public class PotentialStudentPopupResource {
                 .ok()
                 .build();
     }
+
+    private JsonObject toJson(PotentialStudentPopup psPopup) {
+        URI self = resourceUriBuilder
+                .createResourceUri(PotentialStudentPopupResource.class, "getById",
+                        psPopup.getId(), uriInfo);
+
+        URI others = resourceUriBuilder
+                .createResourceUri(PotentialStudentPopupResource.class, "getAll",
+                        uriInfo);
+
+        return Json.createObjectBuilder()
+                .add("email", psPopup.getPotentialStudent().getEmail())
+                .add("fullName", psPopup.getPotentialStudent().getFullName())
+                .add("phone", psPopup.getPotentialStudent().getPhone())
+                .add("dateContact", psPopup.getDateContact() != null ? psPopup.getDateContact().toString() : "")
+                .add("dateSignUp", psPopup.getDateSignUp() != null ? psPopup.getDateSignUp().toString() : "")
+                .add("_links", Json.createArrayBuilder()
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "self")
+                                .add("href", self.toString()))
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "all")
+                                .add("href", others.toString())
+                        )
+                ).build();
+    }
+
 }

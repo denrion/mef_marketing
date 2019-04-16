@@ -8,6 +8,10 @@ import com.github.denrion.mef_marketing.service.EntranceTestService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.stream.JsonCollectors;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -15,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.List;
 
 @Path("tests")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -33,10 +38,27 @@ public class EntranceTestResource {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    ResourceUriBuilder resourceUriBuilder;
+
     @GET
+    @Path("")
     public Response getAll() {
+        final List<EntranceTest> tests = testService.getAll();
+
+        if (tests == null || tests.isEmpty()) {
+            return Response
+                    .noContent()
+                    .build();
+        }
+
+        JsonArray data = tests.stream()
+                .map(this::toJson)
+                .collect(JsonCollectors.toJsonArray());
+
         return Response
-                .ok(testService.getAll())
+                .ok()
+                .entity(data)
                 .build();
     }
 
@@ -47,7 +69,7 @@ public class EntranceTestResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(test)
+                .ok(toJson(test))
                 .build();
     }
 
@@ -67,14 +89,9 @@ public class EntranceTestResource {
 
         EntranceTest entranceTest = testService.save(test);
 
-        URI uri = uriInfo.getAbsolutePathBuilder()
-                .path(entranceTest.getId().toString())
-                .build();
-
         return Response
-                .created(uri)
-                .entity(entranceTest)
                 .status(Response.Status.CREATED)
+                .entity(toJson(entranceTest))
                 .build();
 
     }
@@ -99,7 +116,7 @@ public class EntranceTestResource {
                 .orElseThrow(NotFoundException::new);
 
         return Response
-                .ok(entranceTest)
+                .ok(toJson(entranceTest))
                 .build();
     }
 
@@ -112,4 +129,34 @@ public class EntranceTestResource {
                 .ok()
                 .build();
     }
+
+    private JsonObject toJson(EntranceTest test) {
+        URI self = resourceUriBuilder
+                .createResourceUri(EntranceTestResource.class, "getById",
+                        test.getId(), uriInfo);
+
+        URI others = resourceUriBuilder
+                .createResourceUri(EntranceTestResource.class, "getAll",
+                        uriInfo);
+
+        return Json.createObjectBuilder()
+                .add("email", test.getPotentialStudent().getEmail())
+                .add("studentFullName", test.getPotentialStudent().getFullName())
+                .add("phone", test.getPotentialStudent().getPhone())
+                .add("dateDeal", test.getDateDeal() != null ? test.getDateDeal().toString() : "")
+                .add("dateMailSent", test.getDateMailSent() != null ? test.getDateMailSent().toString() : "")
+                .add("mailContent", test.getMailContent())
+                .add("comment", test.getComment())
+                .add("userFullName", test.getUser().getFullName())
+                .add("_links", Json.createArrayBuilder()
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "self")
+                                .add("href", self.toString()))
+                        .add(Json.createObjectBuilder()
+                                .add("rel", "all")
+                                .add("href", others.toString())
+                        )
+                ).build();
+    }
+
 }
