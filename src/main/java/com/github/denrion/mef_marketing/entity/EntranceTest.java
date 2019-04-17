@@ -51,7 +51,7 @@ public class EntranceTest extends AbstractEntityWithId {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_user_entrance_test"))
-    private AdminUser user;
+    private AppUser user;
 
 
     // EQUALS AND HASH CODE
@@ -116,11 +116,11 @@ public class EntranceTest extends AbstractEntityWithId {
         this.potentialStudent = potentialStudent;
     }
 
-    public AdminUser getUser() {
+    public AppUser getUser() {
         return user;
     }
 
-    public void setUser(AdminUser user) {
+    public void setUser(AppUser user) {
         this.user = user;
     }
 

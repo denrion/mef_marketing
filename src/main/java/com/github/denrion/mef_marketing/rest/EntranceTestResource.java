@@ -1,9 +1,9 @@
 package com.github.denrion.mef_marketing.rest;
 
-import com.github.denrion.mef_marketing.entity.AdminUser;
+import com.github.denrion.mef_marketing.entity.AppUser;
 import com.github.denrion.mef_marketing.entity.EntranceTest;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
-import com.github.denrion.mef_marketing.service.AdminUserService;
+import com.github.denrion.mef_marketing.service.AppUserService;
 import com.github.denrion.mef_marketing.service.EntranceTestService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
@@ -33,7 +33,7 @@ public class EntranceTestResource {
     PotentialStudentService studentService;
 
     @Inject
-    AdminUserService userService;
+    AppUserService userService;
 
     @Context
     UriInfo uriInfo;
@@ -78,7 +78,7 @@ public class EntranceTestResource {
                            @QueryParam("ps_id") Long ps_id,
                            @QueryParam("user_id") Long user_id) {
 
-        AdminUser user = userService.getById(user_id)
+        AppUser user = userService.getById(user_id)
                 .orElseThrow(NotFoundException::new);
 
         PotentialStudent student = studentService.getById(ps_id)
@@ -103,7 +103,7 @@ public class EntranceTestResource {
                            @QueryParam("ps_id") Long ps_id,
                            @QueryParam("user_id") Long user_id) {
 
-        AdminUser user = userService.getById(user_id)
+        AppUser user = userService.getById(user_id)
                 .orElseThrow(NotFoundException::new);
 
         PotentialStudent student = studentService.getById(ps_id)

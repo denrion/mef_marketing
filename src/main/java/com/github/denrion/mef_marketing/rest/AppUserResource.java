@@ -1,7 +1,7 @@
 package com.github.denrion.mef_marketing.rest;
 
-import com.github.denrion.mef_marketing.entity.AdminUser;
-import com.github.denrion.mef_marketing.service.AdminUserService;
+import com.github.denrion.mef_marketing.entity.AppUser;
+import com.github.denrion.mef_marketing.service.AppUserService;
 
 import javax.inject.Inject;
 import javax.json.Json;
@@ -9,6 +9,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.stream.JsonCollectors;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -20,10 +21,10 @@ import java.util.List;
 @Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class AdminUserResource {
+public class AppUserResource {
 
     @Inject
-    AdminUserService userService;
+    AppUserService userService;
 
     @Context
     private UriInfo uriInfo;
@@ -34,7 +35,7 @@ public class AdminUserResource {
     @GET
     @Path("")
     public Response getAll() {
-        List<AdminUser> users = userService.getAll();
+        List<AppUser> users = userService.getAll();
 
         if (users == null || users.isEmpty()) {
             return Response
@@ -55,7 +56,7 @@ public class AdminUserResource {
     @GET
     @Path("{id: \\d+}")
     public Response getById(@PathParam("id") Long id) {
-        AdminUser user = userService.getById(id)
+        AppUser user = userService.getById(id)
                 .orElseThrow(NotFoundException::new);
 
         return Response
@@ -64,33 +65,44 @@ public class AdminUserResource {
     }
 
     @POST
-    public Response create(@Valid AdminUser user) {
-        AdminUser adminUser = userService.save(user);
-
-        if (adminUser == null) {
-            return Response
-                    .noContent()
-                    .build();
-        }
+    public Response create(@Valid AppUser user) {
+        AppUser appUser = userService.save(user);
 
         return Response
                 .ok()
                 .status(Response.Status.CREATED)
-                .entity(toJson(adminUser))
+                .entity(toJson(appUser))
+                .build();
+    }
+
+    @POST
+    @Path("login")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response login(@NotBlank @FormParam("username") String username,
+                          @NotBlank @FormParam("password") String password) {
+
+        boolean authenticated = userService.authenticateUser(username, password);
+
+        if (!authenticated) {
+            throw new SecurityException("Email or password not valid");
+        }
+
+        return Response
+                .ok()
                 .build();
     }
 
     @PUT
     @Path("{id: \\d+}")
     public Response update(@PathParam("id") Long id,
-                           @Valid AdminUser user) {
+                           @Valid AppUser user) {
 
-        AdminUser adminUser = userService.update(user, id)
+        AppUser appUser = userService.update(user, id)
                 .orElseThrow(NotFoundException::new);
 
         return Response
                 .ok()
-                .entity(toJson(adminUser))
+                .entity(toJson(appUser))
                 .build();
     }
 
@@ -104,18 +116,17 @@ public class AdminUserResource {
                 .build();
     }
 
-    private JsonObject toJson(AdminUser user) {
+    private JsonObject toJson(AppUser user) {
         URI self = resourceUriBuilder
-                .createResourceUri(AdminUserResource.class, "getById",
+                .createResourceUri(AppUserResource.class, "getById",
                         user.getId(), uriInfo);
 
         URI others = resourceUriBuilder
-                .createResourceUri(AdminUserResource.class, "getAll",
+                .createResourceUri(AppUserResource.class, "getAll",
                         uriInfo);
 
         return Json.createObjectBuilder()
                 .add("username", user.getUsername())
-                .add("password", user.getPassword())
                 .add("fullName", user.getFullName())
                 .add("_links", Json.createArrayBuilder()
                         .add(Json.createObjectBuilder()

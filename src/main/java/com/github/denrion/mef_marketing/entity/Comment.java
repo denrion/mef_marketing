@@ -39,7 +39,7 @@ public class Comment extends AbstractEntityWithId {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_user_comment"))
-    private AdminUser user;
+    private AppUser user;
 
     // GETTERS AND SETTERS
 
@@ -59,11 +59,11 @@ public class Comment extends AbstractEntityWithId {
         this.potentialStudent = potentialStudent;
     }
 
-    public AdminUser getUser() {
+    public AppUser getUser() {
         return user;
     }
 
-    public void setUser(AdminUser user) {
+    public void setUser(AppUser user) {
         this.user = user;
     }
 
