@@ -79,16 +79,20 @@ public class AppUserService implements GenericService<AppUser> {
         entityManager.remove(user);
     }
 
-    public boolean authenticateUser(String username, String password) {
+    public AppUser authenticateUser(String username, String password) {
         final Optional<AppUser> optional = getByUsername(username);
 
         if (!optional.isPresent()) {
-            return false;
+            throw new SecurityException("Email is not valid");
         }
 
         AppUser user = optional.get();
 
-        return passwordsMatch(user.getPassword(), user.getSalt(), password);
+        if (!passwordsMatch(user.getPassword(), user.getSalt(), password)) {
+            throw new SecurityException("Password is not valid");
+        }
+
+        return user;
     }
 
     private Optional<AppUser> getByUsername(String username) {

@@ -1,8 +1,10 @@
 package com.github.denrion.mef_marketing.rest;
 
 import com.github.denrion.mef_marketing.entity.PotentialStudentMail;
+import com.github.denrion.mef_marketing.security.Auth;
 import com.github.denrion.mef_marketing.service.PotentialStudentMailService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -20,6 +22,7 @@ import java.util.List;
 @Path("mail")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Auth
 public class PotentialStudentMailResource {
 
     @Inject
@@ -33,6 +36,7 @@ public class PotentialStudentMailResource {
 
     @GET
     @Path("")
+    @RolesAllowed({"user", "admin"})
     public Response getAll() {
         final List<PotentialStudentMail> students = psMailService.getAll();
 
@@ -54,6 +58,7 @@ public class PotentialStudentMailResource {
 
     @GET
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getById(@PathParam("id") Long id) {
         PotentialStudentMail student = psMailService.getById(id)
                 .orElseThrow(NotFoundException::new);
@@ -64,6 +69,7 @@ public class PotentialStudentMailResource {
     }
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response create(@Valid PotentialStudentMail psm) {
 
         final PotentialStudentMail student = psMailService.save(psm);
@@ -77,6 +83,7 @@ public class PotentialStudentMailResource {
 
     @PUT
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response update(@PathParam("id") Long id,
                            @Valid PotentialStudentMail psm) {
 
@@ -90,6 +97,7 @@ public class PotentialStudentMailResource {
 
     @DELETE
     @Path("{id: \\d+}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         psMailService.delete(id);
 

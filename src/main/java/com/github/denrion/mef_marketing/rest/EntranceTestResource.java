@@ -3,10 +3,12 @@ package com.github.denrion.mef_marketing.rest;
 import com.github.denrion.mef_marketing.entity.AppUser;
 import com.github.denrion.mef_marketing.entity.EntranceTest;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
+import com.github.denrion.mef_marketing.security.Auth;
 import com.github.denrion.mef_marketing.service.AppUserService;
 import com.github.denrion.mef_marketing.service.EntranceTestService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -24,6 +26,7 @@ import java.util.List;
 @Path("tests")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Auth
 public class EntranceTestResource {
 
     @Inject
@@ -43,6 +46,7 @@ public class EntranceTestResource {
 
     @GET
     @Path("")
+    @RolesAllowed({"user", "admin"})
     public Response getAll() {
         final List<EntranceTest> tests = testService.getAll();
 
@@ -64,6 +68,7 @@ public class EntranceTestResource {
 
     @GET
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getById(@PathParam("id") Long id) {
         EntranceTest test = testService.getById(id)
                 .orElseThrow(NotFoundException::new);
@@ -74,6 +79,7 @@ public class EntranceTestResource {
     }
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response create(@Valid EntranceTest test,
                            @QueryParam("ps_id") Long ps_id,
                            @QueryParam("user_id") Long user_id) {
@@ -98,6 +104,7 @@ public class EntranceTestResource {
 
     @PUT
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response update(@PathParam("id") Long id,
                            @Valid EntranceTest test,
                            @QueryParam("ps_id") Long ps_id,
@@ -122,6 +129,7 @@ public class EntranceTestResource {
 
     @DELETE
     @Path("{id: \\d+}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         testService.delete(id);
 

@@ -42,6 +42,11 @@ public class AppUser extends AbstractEntityWithId {
     private String password;
 
     @Basic
+    @Column(name = "role")
+    @NotBlank(message = "Not Blank")
+    private String role;
+
+    @Basic
     @Column(name = "salt")
     private String salt;
 
@@ -70,6 +75,14 @@ public class AppUser extends AbstractEntityWithId {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getSalt() {

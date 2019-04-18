@@ -1,15 +1,16 @@
 package com.github.denrion.mef_marketing.rest;
 
 import com.github.denrion.mef_marketing.entity.AppUser;
+import com.github.denrion.mef_marketing.security.Auth;
 import com.github.denrion.mef_marketing.service.AppUserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.stream.JsonCollectors;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -21,6 +22,7 @@ import java.util.List;
 @Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Auth
 public class AppUserResource {
 
     @Inject
@@ -34,6 +36,7 @@ public class AppUserResource {
 
     @GET
     @Path("")
+    @RolesAllowed({"user", "admin"})
     public Response getAll() {
         List<AppUser> users = userService.getAll();
 
@@ -47,6 +50,7 @@ public class AppUserResource {
                 .map(this::toJson)
                 .collect(JsonCollectors.toJsonArray());
 
+
         return Response
                 .ok()
                 .entity(data)
@@ -55,6 +59,7 @@ public class AppUserResource {
 
     @GET
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getById(@PathParam("id") Long id) {
         AppUser user = userService.getById(id)
                 .orElseThrow(NotFoundException::new);
@@ -65,6 +70,7 @@ public class AppUserResource {
     }
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response create(@Valid AppUser user) {
         AppUser appUser = userService.save(user);
 
@@ -75,25 +81,9 @@ public class AppUserResource {
                 .build();
     }
 
-    @POST
-    @Path("login")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response login(@NotBlank @FormParam("username") String username,
-                          @NotBlank @FormParam("password") String password) {
-
-        boolean authenticated = userService.authenticateUser(username, password);
-
-        if (!authenticated) {
-            throw new SecurityException("Email or password not valid");
-        }
-
-        return Response
-                .ok()
-                .build();
-    }
-
     @PUT
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response update(@PathParam("id") Long id,
                            @Valid AppUser user) {
 
@@ -108,6 +98,7 @@ public class AppUserResource {
 
     @DELETE
     @Path("{id: \\d+}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         userService.delete(id);
 

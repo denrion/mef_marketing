@@ -1,8 +1,10 @@
 package com.github.denrion.mef_marketing.rest;
 
 import com.github.denrion.mef_marketing.entity.PotentialStudentPhone;
+import com.github.denrion.mef_marketing.security.Auth;
 import com.github.denrion.mef_marketing.service.PotentialStudentPhoneService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -20,6 +22,7 @@ import java.util.List;
 @Path("phone")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Auth
 public class PotentialStudentPhoneResource {
 
     @Inject
@@ -33,6 +36,7 @@ public class PotentialStudentPhoneResource {
 
     @GET
     @Path("")
+    @RolesAllowed({"user", "admin"})
     public Response getAll() {
         final List<PotentialStudentPhone> students = psPhoneService.getAll();
 
@@ -54,6 +58,7 @@ public class PotentialStudentPhoneResource {
 
     @GET
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getById(@PathParam("id") Long id) {
         PotentialStudentPhone student = psPhoneService.getById(id)
                 .orElseThrow(NotFoundException::new);
@@ -64,6 +69,7 @@ public class PotentialStudentPhoneResource {
     }
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response create(@Valid PotentialStudentPhone psp) {
 
         final PotentialStudentPhone student = psPhoneService.save(psp);
@@ -76,6 +82,7 @@ public class PotentialStudentPhoneResource {
 
     @PUT
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response update(@PathParam("id") Long id,
                            @Valid PotentialStudentPhone psp) {
 
@@ -90,6 +97,7 @@ public class PotentialStudentPhoneResource {
 
     @DELETE
     @Path("{id: \\d+}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         psPhoneService.delete(id);
 

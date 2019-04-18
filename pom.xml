@@ -16,14 +16,6 @@
         <hibernate.version>5.4.2.Final</hibernate.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>tribestream.io</id>
-            <name>Tribestream Repository</name>
-            <url>https://repository.tribestream.io/maven/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
 
         <dependency>
@@ -33,12 +25,16 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.15</version>
+            <scope>provided</scope>
         </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -62,18 +58,34 @@
             <version>1.4.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.8.0-beta4</version>
-            <scope>test</scope>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
         </dependency>
+
+
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.slf4j/slf4j-simple &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-simple</artifactId>-->
+        <!--            <version>1.8.0-beta4</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
 
     </dependencies>
 
     <build>
         <finalName>mef_marketing</finalName>
+
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/java/resources</directory>
+            </testResource>
+        </testResources>
 
         <pluginManagement>
 
@@ -109,6 +121,10 @@
                         <source>${version.java}</source>
                         <target>${version.java}</target>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
                 </plugin>
 
                 <plugin>

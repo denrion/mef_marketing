@@ -3,10 +3,12 @@ package com.github.denrion.mef_marketing.rest;
 import com.github.denrion.mef_marketing.entity.AppUser;
 import com.github.denrion.mef_marketing.entity.Comment;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
+import com.github.denrion.mef_marketing.security.Auth;
 import com.github.denrion.mef_marketing.service.AppUserService;
 import com.github.denrion.mef_marketing.service.CommentService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -24,6 +26,7 @@ import java.util.List;
 @Path("comments")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Auth
 public class CommentResource {
 
     @Inject
@@ -43,6 +46,7 @@ public class CommentResource {
 
     @GET
     @Path("")
+    @RolesAllowed({"user", "admin"})
     public Response getAll() {
         final List<Comment> comments = commentService.getAll();
 
@@ -65,6 +69,7 @@ public class CommentResource {
 
     @GET
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getById(@PathParam("id") Long id) {
         Comment comment = commentService.getById(id)
                 .orElseThrow(NotFoundException::new);
@@ -76,6 +81,7 @@ public class CommentResource {
 
     @GET
     @Path("student/{ps_id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getAllByPSId(@PathParam("ps_id") Long ps_id) {
         final List<Comment> comments = commentService.getAllByPSId(ps_id);
 
@@ -96,6 +102,7 @@ public class CommentResource {
     }
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response create(@Valid Comment comm,
                            @QueryParam("ps_id") Long ps_id,
                            @QueryParam("user_id") Long user_id) {
@@ -119,6 +126,7 @@ public class CommentResource {
 
     @PUT
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response update(@PathParam("id") Long id,
                            @Valid Comment comm,
                            @QueryParam("ps_id") Long ps_id,
@@ -143,6 +151,7 @@ public class CommentResource {
 
     @DELETE
     @Path("{id: \\d+}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         commentService.delete(id);
 

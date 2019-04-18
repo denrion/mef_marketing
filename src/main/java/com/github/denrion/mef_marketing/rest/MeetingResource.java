@@ -2,9 +2,11 @@ package com.github.denrion.mef_marketing.rest;
 
 import com.github.denrion.mef_marketing.entity.Meeting;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
+import com.github.denrion.mef_marketing.security.Auth;
 import com.github.denrion.mef_marketing.service.MeetingService;
 import com.github.denrion.mef_marketing.service.PotentialStudentService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -22,6 +24,7 @@ import java.util.List;
 @Path("meeting")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Auth
 public class MeetingResource {
 
     @Inject
@@ -38,6 +41,7 @@ public class MeetingResource {
 
     @GET
     @Path("")
+    @RolesAllowed({"user", "admin"})
     public Response getAll() {
         final List<Meeting> meetings = meetingService.getAll();
 
@@ -59,6 +63,7 @@ public class MeetingResource {
 
     @GET
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getById(@PathParam("id") Long id) {
         Meeting meeting = meetingService.getById(id)
                 .orElseThrow(NotFoundException::new);
@@ -69,6 +74,7 @@ public class MeetingResource {
     }
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response create(@Valid Meeting meeting,
                            @QueryParam("ps_id") Long ps_id) {
 
@@ -87,6 +93,7 @@ public class MeetingResource {
 
     @PUT
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response update(@PathParam("id") Long id,
                            @Valid Meeting meeting,
                            @QueryParam("ps_id") Long ps_id) {
@@ -105,6 +112,7 @@ public class MeetingResource {
 
     @DELETE
     @Path("{id: \\d+}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         meetingService.delete(id);
 

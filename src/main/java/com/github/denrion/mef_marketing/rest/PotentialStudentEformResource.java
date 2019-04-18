@@ -1,8 +1,10 @@
 package com.github.denrion.mef_marketing.rest;
 
 import com.github.denrion.mef_marketing.entity.PotentialStudentEform;
+import com.github.denrion.mef_marketing.security.Auth;
 import com.github.denrion.mef_marketing.service.PotentialStudentEformService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -20,6 +22,7 @@ import java.util.List;
 @Path("eform")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Auth
 public class PotentialStudentEformResource {
 
     @Inject
@@ -33,6 +36,7 @@ public class PotentialStudentEformResource {
 
     @GET
     @Path("")
+    @RolesAllowed({"user", "admin"})
     public Response getAll() {
         final List<PotentialStudentEform> students = psEformService.getAll();
 
@@ -54,6 +58,7 @@ public class PotentialStudentEformResource {
 
     @GET
     @Path("{id: \\d+}")
+    @RolesAllowed({"user", "admin"})
     public Response getById(@PathParam("id") Long id) {
         PotentialStudentEform student = psEformService.getById(id)
                 .orElseThrow(NotFoundException::new);
@@ -64,6 +69,7 @@ public class PotentialStudentEformResource {
     }
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response create(@Valid PotentialStudentEform pse) {
 
         final PotentialStudentEform student = psEformService.save(pse);
@@ -89,6 +95,7 @@ public class PotentialStudentEformResource {
 
     @DELETE
     @Path("{id: \\d+}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         psEformService.delete(id);
 
