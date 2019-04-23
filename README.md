@@ -1,6 +1,6 @@
 # Build
-mvn clean package && docker build -t com.github.denrion.mef_marketing/mef_marketing .
+mvn clean package
 
 # RUN
 
-docker rm -f mef_marketing || true && docker run -d -p 8080:8080 -p 4848:4848 --name mef_marketing com.github.denrion.mef_marketing/mef_marketing "# mef_marketing" 
+java -jar {project_location}/target/mef_marketing-exec.jar
