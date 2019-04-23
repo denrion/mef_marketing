@@ -13,18 +13,13 @@
         <properties>
             <property name="tomee.jpa.factory.lazy" value="true"/>
 
-            <!-- DEPRICATED -->
-            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>-->
-
-            <!-- use this instead -->
             <property name="hibernate.dialect.storage_engine" value="innodb"/>
-
             <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
-            <!--            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>-->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <!--            <property name="hibernate.hbm2ddl.auto" value="create"/>-->
-            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <!--            <property name="hibernate.hbm2ddl.auto" value="validate"/>-->
 
         </properties>
     </persistence-unit>

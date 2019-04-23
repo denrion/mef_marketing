@@ -1,6 +1,6 @@
 package com.github.denrion.mef_marketing.service;
 
-import com.github.denrion.mef_marketing.config.DuplicateEmailException;
+import com.github.denrion.mef_marketing.config.exceptions.DuplicateEmailException;
 import com.github.denrion.mef_marketing.entity.PotentialStudent;
 
 import javax.ejb.LocalBean;

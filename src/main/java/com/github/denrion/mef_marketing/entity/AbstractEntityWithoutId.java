@@ -1,5 +1,6 @@
 package com.github.denrion.mef_marketing.entity;
 
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public abstract class AbstractEntityWithoutId implements Serializable {
     @Version
     private Long version = 1L;
 
+    public abstract JsonObjectBuilder toJson();
 
     @PrePersist
     private void onCreate() {
@@ -29,7 +31,6 @@ public abstract class AbstractEntityWithoutId implements Serializable {
     private void onUpdate() {
         this.lastModified = LocalDateTime.now();
     }
-
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

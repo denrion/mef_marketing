@@ -2,6 +2,7 @@ package com.github.denrion.mef_marketing.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -42,6 +43,10 @@ public class PotentialStudentEform extends AbstractEntityWithoutId {
     @MapsId
     private PotentialStudent potentialStudent;
 
+    @Override
+    public JsonObjectBuilder toJson() {
+        return null;
+    }
 
     // GETTERS AND SETTERS
 

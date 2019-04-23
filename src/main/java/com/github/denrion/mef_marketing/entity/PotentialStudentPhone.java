@@ -1,5 +1,6 @@
 package com.github.denrion.mef_marketing.entity;
 
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -63,6 +64,11 @@ public class PotentialStudentPhone extends AbstractEntityWithoutId {
             foreignKey = @ForeignKey(name = "fk_potential_student_phone"))
     @MapsId
     private PotentialStudent potentialStudent;
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        return null;
+    }
 
 
     // GETTERS AND SETTERS

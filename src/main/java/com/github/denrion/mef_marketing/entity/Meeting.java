@@ -2,6 +2,7 @@ package com.github.denrion.mef_marketing.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -49,6 +50,11 @@ public class Meeting extends AbstractEntityWithoutId {
             foreignKey = @ForeignKey(name = "fk_potential_student_meeting"))
     @MapsId
     private PotentialStudent potentialStudent;
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        return null;
+    }
 
 
     // GETTERS AND SETTERS

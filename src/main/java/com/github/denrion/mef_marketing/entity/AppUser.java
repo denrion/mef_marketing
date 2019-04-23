@@ -1,20 +1,25 @@
 package com.github.denrion.mef_marketing.entity;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import static com.github.denrion.mef_marketing.entity.AppUser.GET_ALL_USERS;
 import static com.github.denrion.mef_marketing.entity.AppUser.GET_USER_BY_USERNAME;
 
+@Schema(name = "AppUser", description = "POJO that represents an AppUser")
 @Entity(name = "AppUser")
 @Table(name = "app_user", uniqueConstraints =
 @UniqueConstraint(name = "username_unique", columnNames = {"username"}))
 @DynamicUpdate // HIBERNATE ONLY!!!!!!!!!!!
 @NamedQuery(name = GET_ALL_USERS,
-        query = "SELECT u FROM AppUser u")
+        query = "SELECT u FROM AppUser u ORDER BY u.createdAt")
 @NamedQuery(name = GET_USER_BY_USERNAME,
         query = "SELECT u FROM AppUser u WHERE u.username = :username")
 public class AppUser extends AbstractEntityWithId {
@@ -26,30 +31,44 @@ public class AppUser extends AbstractEntityWithId {
 
     // FIELDS
 
+    @Schema(example = "name")
     @Basic
     @Column(name = "full_name", length = 80)
     @Size(max = 80, message = "max 80")
     private String fullName;
 
+    @Schema(required = true, example = "username")
     @Basic
     @Column(name = "username")
     @NotBlank(message = "Not Blank")
     private String username;
 
+    @Schema(required = true, example = "password")
     @Basic
     @Column(name = "password")
     @NotBlank(message = "Not Blank")
+//    @StrongPassword
     private String password;
 
+    @Schema(required = true, example = "admin")
     @Basic
     @Column(name = "role")
     @NotBlank(message = "Not Blank")
+    @Pattern(regexp = "admin|user")
     private String role;
 
     @Basic
     @Column(name = "salt")
     private String salt;
 
+    // JSON REPRESENTATION
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        return Json.createObjectBuilder()
+                .add("username", getUsername())
+                .add("fullName", getFullName());
+    }
 
     // GETTERS AND SETTERS
 
@@ -93,12 +112,5 @@ public class AppUser extends AbstractEntityWithId {
         this.salt = salt;
     }
 
-    @Override
-    public String toString() {
-        return "AppUser{" +
-                "fullName='" + fullName + '\'' +
-                ", password='" + password + '\'' +
-                ", username='" + username + '\'' +
-                '}';
-    }
+
 }

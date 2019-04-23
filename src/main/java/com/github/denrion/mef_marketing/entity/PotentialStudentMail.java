@@ -2,6 +2,7 @@ package com.github.denrion.mef_marketing.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -58,6 +59,11 @@ public class PotentialStudentMail extends AbstractEntityWithoutId {
     @MapsId
     @Valid
     private PotentialStudent potentialStudent;
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        return null;
+    }
 
 
     // GETTERS AND SETTERS

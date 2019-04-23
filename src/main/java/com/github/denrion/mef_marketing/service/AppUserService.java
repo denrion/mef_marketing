@@ -1,6 +1,6 @@
 package com.github.denrion.mef_marketing.service;
 
-import com.github.denrion.mef_marketing.config.DuplicateUsernameException;
+import com.github.denrion.mef_marketing.config.exceptions.DuplicateUsernameException;
 import com.github.denrion.mef_marketing.entity.AppUser;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -41,6 +41,14 @@ public class AppUserService implements GenericService<AppUser> {
                 .getResultList();
     }
 
+    public List<AppUser> getAll(int first, int max) {
+        return entityManager
+                .createNamedQuery(AppUser.GET_ALL_USERS, AppUser.class)
+                .setFirstResult(first - 1)
+                .setMaxResults(max)
+                .getResultList();
+    }
+
     @Override
     public AppUser save(AppUser user) {
 
@@ -64,7 +72,7 @@ public class AppUserService implements GenericService<AppUser> {
     @Override
     public Optional<AppUser> update(AppUser newUser, Long id) {
         AppUser oldUser = getById(id)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException("The user with id " + id + " does not exist"));
 
         updateAdminUserFields(oldUser, newUser);
 
@@ -74,7 +82,7 @@ public class AppUserService implements GenericService<AppUser> {
     @Override
     public void delete(Long id) {
         AppUser user = getById(id)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException("The user with id " + id + " does not exist"));
 
         entityManager.remove(user);
     }

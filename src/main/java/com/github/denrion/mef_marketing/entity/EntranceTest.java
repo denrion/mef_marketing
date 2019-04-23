@@ -2,6 +2,7 @@ package com.github.denrion.mef_marketing.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -52,6 +53,11 @@ public class EntranceTest extends AbstractEntityWithId {
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_user_entrance_test"))
     private AppUser user;
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        return null;
+    }
 
 
     // EQUALS AND HASH CODE

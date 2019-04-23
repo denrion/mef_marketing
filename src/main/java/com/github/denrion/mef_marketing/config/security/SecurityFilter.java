@@ -1,4 +1,4 @@
-package com.github.denrion.mef_marketing.security;
+package com.github.denrion.mef_marketing.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -17,7 +17,7 @@ import javax.ws.rs.ext.Provider;
 import java.security.Key;
 import java.security.Principal;
 
-import static com.github.denrion.mef_marketing.security.SecurityUtil.BEARER;
+import static com.github.denrion.mef_marketing.config.security.SecurityUtil.BEARER;
 
 @Auth
 @Provider

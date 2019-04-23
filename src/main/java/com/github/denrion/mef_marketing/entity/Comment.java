@@ -2,6 +2,7 @@ package com.github.denrion.mef_marketing.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -24,7 +25,6 @@ public class Comment extends AbstractEntityWithId {
     public static final String GET_COMMENT_BY_ID = "Comment.getById";
     public static final String GET_COMMENTS_BY_POTENTIAL_STUDENT_ID = "Comment.getByPSId";
 
-
     // FIELDS
 
     @Basic
@@ -40,6 +40,12 @@ public class Comment extends AbstractEntityWithId {
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_user_comment"))
     private AppUser user;
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        return null;
+    }
+
 
     // GETTERS AND SETTERS
 

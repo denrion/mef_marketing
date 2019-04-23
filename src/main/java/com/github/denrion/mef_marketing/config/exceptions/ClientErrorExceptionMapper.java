@@ -1,4 +1,4 @@
-package com.github.denrion.mef_marketing.config;
+package com.github.denrion.mef_marketing.config.exceptions;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.Response;
@@ -12,7 +12,7 @@ public class ClientErrorExceptionMapper implements ExceptionMapper<ClientErrorEx
     @Override
     public Response toResponse(ClientErrorException e) {
         return Response
-                .status(Response.Status.NOT_FOUND)
+                .status(Response.Status.METHOD_NOT_ALLOWED)
                 .entity(Collections.singletonMap("error", e.getMessage()))
                 .build();
     }

@@ -1,4 +1,4 @@
-package com.github.denrion.mef_marketing.config;
+package com.github.denrion.mef_marketing.config.exceptions;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;

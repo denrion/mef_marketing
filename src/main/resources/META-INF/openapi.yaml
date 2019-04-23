@@ -1,0 +1,7 @@
+openapi: 3.0.0
+info:
+  title: MEF Marketing Information System
+  description: Only for the use of MEF marketing team
+  version: 1.0.0
+servers:
+  - url: http://localhost:8089/mef_marketing/api/v1

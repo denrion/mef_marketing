@@ -1,17 +1,18 @@
-package com.github.denrion.mef_marketing.config;
+package com.github.denrion.mef_marketing.config.exceptions;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.util.Collections;
 
 @Provider
-public class SecurityExceptionMapper implements ExceptionMapper<SecurityException> {
+public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 
     @Override
-    public Response toResponse(SecurityException e) {
+    public Response toResponse(NotFoundException e) {
         return Response
-                .status(Response.Status.UNAUTHORIZED)
+                .status(Response.Status.NOT_FOUND)
                 .entity(Collections.singletonMap("error", e.getMessage()))
                 .build();
     }

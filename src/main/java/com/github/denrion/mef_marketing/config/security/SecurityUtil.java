@@ -1,4 +1,4 @@
-package com.github.denrion.mef_marketing.security;
+package com.github.denrion.mef_marketing.config.security;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;

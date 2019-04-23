@@ -13,6 +13,8 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.java>1.8</version.java>
+        <version.javaee>8.0</version.javaee>
+        <version.tomee>8.0.0-M2</version.tomee>
         <hibernate.version>5.4.2.Final</hibernate.version>
     </properties>
 
@@ -21,7 +23,7 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>8.0</version>
+            <version>${version.javaee}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -30,9 +32,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.15</version>
-            <scope>provided</scope>
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
@@ -65,6 +65,25 @@
             <version>0.9.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.eclipse.microprofile.openapi/microprofile-openapi-api -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+            <version>2.0-MR1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>3.17.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.slf4j/slf4j-simple &ndash;&gt;-->
         <!--        <dependency>-->
@@ -88,12 +107,11 @@
         </testResources>
 
         <pluginManagement>
-
             <plugins>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
+                    <version>3.2.2</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
@@ -102,7 +120,7 @@
                 <plugin>
                     <groupId>org.apache.tomee.maven</groupId>
                     <artifactId>tomee-maven-plugin</artifactId>
-                    <version>8.0.0-M2</version>
+                    <version>${version.tomee}</version>
                     <executions>
                         <execution>
                             <id>executable-jar</id>
@@ -113,30 +131,32 @@
                         </execution>
                     </executions>
                 </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>${version.java}</source>
-                        <target>${version.java}</target>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.tomee.maven</groupId>
-                    <artifactId>tomee-maven-plugin</artifactId>
-                </plugin>
-
             </plugins>
 
         </pluginManagement>
 
-    </build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>${version.java}</source>
+                    <target>${version.java}</target>
+                </configuration>
+            </plugin>
 
+            <plugin>
+                <groupId>org.apache.tomee.maven</groupId>
+                <artifactId>tomee-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

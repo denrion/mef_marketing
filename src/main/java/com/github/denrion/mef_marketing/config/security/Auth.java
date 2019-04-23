@@ -1,4 +1,4 @@
-package com.github.denrion.mef_marketing.security;
+package com.github.denrion.mef_marketing.config.security;
 
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;

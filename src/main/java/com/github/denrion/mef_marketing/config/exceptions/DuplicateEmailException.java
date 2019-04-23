@@ -1,4 +1,4 @@
-package com.github.denrion.mef_marketing.config;
+package com.github.denrion.mef_marketing.config.exceptions;
 
 public class DuplicateEmailException extends RuntimeException {
 
